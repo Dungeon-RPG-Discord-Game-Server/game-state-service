@@ -1,0 +1,75 @@
+{
+    "rooms": [
+      {
+        "id": "room1",
+        "description": "입구",
+        "neighbors": ["room2"],
+        "monsters": [
+          {
+            "name": "슬라임",
+            "level": 1,
+            "health": 30,
+            "attack": 5,
+            "defense": 2
+          },
+          {
+            "name": "쥐",
+            "level": 1,
+            "health": 20,
+            "attack": 3,
+            "defense": 1
+          }
+        ],
+        "rewards": [
+          {
+            "name": "금화",
+            "type": "Currency",
+            "amount": 50
+          }
+        ]
+      },
+      {
+        "id": "room2",
+        "description": "복도",
+        "neighbors": ["room1", "room3"],
+        "monsters": [
+          {
+            "name": "고블린",
+            "level": 2,
+            "health": 45,
+            "attack": 7,
+            "defense": 3
+          }
+        ],
+        "rewards": [
+          {
+            "name": "은화",
+            "type": "Currency",
+            "amount": 20
+          }
+        ]
+      },
+      {
+        "id": "room3",
+        "description": "보스 방",
+        "neighbors": ["room2"],
+        "monsters": [
+          {
+            "name": "드래곤",
+            "level": 10,
+            "health": 300,
+            "attack": 25,
+            "defense": 15
+          }
+        ],
+        "rewards": [
+          {
+            "name": "보물 상자",
+            "type": "Item",
+            "amount": 1
+          }
+        ]
+      }
+    ]
+  }
+  
