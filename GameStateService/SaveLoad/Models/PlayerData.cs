@@ -47,6 +47,7 @@ namespace GameStateService.Models
         /// 플레이어가 위치한 맵 파일명
         /// </summary>
         public Map CurrentMap { get; set; }
+        public GameStateData CurrentGameStateData { get; set; }
 
         /// <summary>
         /// PlayerData 클래스의 기본 생성자입니다.
