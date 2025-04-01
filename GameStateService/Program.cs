@@ -2,9 +2,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using GameStateService.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. 서비스 구성 (DI 컨테이너에 서비스 등록)
+builder.Services.AddSingleton<APIRequestWrapper>();
+builder.Services.AddSingleton<HttpClient>();
+builder.Services.AddSingleton<MemoryCacheService>();
+
 builder.Services.AddControllers();  // MVC 컨트롤러 등록
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();   // Swagger 설정 (선택)

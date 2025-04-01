@@ -24,7 +24,7 @@ namespace GameService.Controllers
             // 사용자의 선택을 게임 로직에 반영하는 로직을 구현합니다.
             // 예: 전투 시작, 보상 지급 등
             // 처리 결과를 반환합니다.
-            return Ok(new { message = "선택이 처리되었습니다." });
+            return Ok(new { message = $"선택이 처리되었습니다: UserId-{response.UserId}, SelectedOption-{response.SelectedOption}" });
         }
     }
 
