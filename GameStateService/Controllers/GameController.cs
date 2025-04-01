@@ -1,12 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
+using GameStateService.Services;
+using System.Threading.Tasks;
+
 namespace GameService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ChoiceController : ControllerBase
+    public class GameController : ControllerBase
     {
+        private readonly MemoryCacheService _memoryCacheService;
+        public GameController(MemoryCacheService memoryCacheService)
+        {
+            _memoryCacheService = memoryCacheService;
+        }
+        [HttpGet("alive")]
+        public async Task<IActionResult> GetSessionAlive([FromQuery] string userId)
+        {
+            var isAlive = await _memoryCacheService.GetPlayerDataAsync(userId);
+            return Ok(new { isAlive });
+        }
         // GET: api/choice-options?userId=...
         [HttpGet("choice-options")]
         public IActionResult GetChoiceOptions([FromQuery] string userId)
