@@ -7,6 +7,8 @@ using GameStateService.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. 서비스 구성 (DI 컨테이너에 서비스 등록)
+builder.Services.AddMemoryCache();
+
 builder.Services.AddSingleton<APIRequestWrapper>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<MemoryCacheService>();
