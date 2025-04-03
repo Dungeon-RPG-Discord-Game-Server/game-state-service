@@ -15,11 +15,11 @@ namespace GameService.Controllers
         {
             _memoryCacheService = memoryCacheService;
         }
-        [HttpGet("alive")]
-        public async Task<IActionResult> GetSessionAlive([FromQuery] string userId)
+        [HttpGet("{userId}/status")]
+        public async Task<IActionResult> GetSessionAlive(string userId)
         {
-            var isAlive = await _memoryCacheService.GetPlayerDataAsync(userId);
-            return Ok(new { isAlive });
+            var isOnline = await _memoryCacheService.GetPlayerDataAsync(userId);
+            return Ok(new { isOnline });
         }
         // GET: api/choice-options?userId=...
         [HttpGet("choice-options")]
