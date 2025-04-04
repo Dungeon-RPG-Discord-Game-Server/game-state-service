@@ -17,17 +17,17 @@ namespace GameService.Controllers
         [HttpGet("{userId}/status")]
         public async Task<IActionResult> GetUserOnline(string userId)
         {
-            var isOnline = await _memoryCacheService.GetPlayerDataAsync(userId);
+            bool isOnline = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
 
             var result = new PlayerStatusDto
             {
                 PlayerId = userId,
-                Online = isOnline != null
+                Online = isOnline
             };
             return Ok(result);
         }
         
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> PostRegisterPlayer([FromBody] RegisterPlayerRequestDto request)
         {
             bool alreadyRegistered = await _memoryCacheService.GetPlayerDataAsync(request.UserId) != null;
@@ -51,6 +51,19 @@ namespace GameService.Controllers
                 Registered = true,
                 Message = "✅ User successfully registered."
             });
+        }
+
+        [HttpGet("{userId}/start")]
+        public async Task<IActionResult> PostStartGame(string userId)
+        {
+            bool isOnline = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
+
+            var result = new PlayerStatusDto
+            {
+                PlayerId = userId,
+                Online = isOnline
+            };
+            return Ok(result);
         }
     }
 
