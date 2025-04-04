@@ -29,7 +29,7 @@ namespace GameStateService.Models
         public string Description { get; set; }
 
         [JsonPropertyName("neighbors")]
-        public List<string> Neighbors { get; set; }
+        public List<int> Neighbors { get; set; }
 
         [JsonPropertyName("monster")]
         public Monster Monster { get; set; }
@@ -64,6 +64,9 @@ namespace GameStateService.Models
     {
         [JsonPropertyName("name")]
         public string Name { get; set; }
+        
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
         
         [JsonPropertyName("health")]
         public int Health { get; set; }
