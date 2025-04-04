@@ -17,6 +17,20 @@ namespace GameStateService.Services
             _memoryCache = memoryCache;
         }
 
+        public async Task RegisterPlayerDataAsync(string playerId, TimeSpan? expiration = null)
+        {
+            var options = new MemoryCacheEntryOptions();
+            if (expiration.HasValue)
+            {
+                options.SetAbsoluteExpiration(expiration.Value);
+            }
+            PlayerData data = PlayerFactory.CreateNewPlayer(playerId, playerId);
+            string strData = JsonSerializer.Serialize(data);
+            _memoryCache.Set(playerId, strData, options);
+
+            Console.WriteLine(data.ToString());
+        }
+
         public async Task SetPlayerDataAsync(string playerId, PlayerData data, TimeSpan? expiration = null)
         {
             var options = new MemoryCacheEntryOptions();

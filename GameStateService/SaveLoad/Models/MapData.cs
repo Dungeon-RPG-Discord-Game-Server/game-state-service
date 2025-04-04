@@ -7,10 +7,15 @@ namespace GameStateService.Models
     public class Map
     {
         public string MapName { get; set;}
-        public string RoomId { get; set; }
     }
     public class MapData
     {
+        [JsonPropertyName("map_name")]
+        public string MapName { get; set; }
+
+        [JsonPropertyName("current_room")]
+        public int CurrentRoom { get; set; }
+
         [JsonPropertyName("rooms")]
         public List<Room> Rooms { get; set; }
     }
@@ -26,13 +31,15 @@ namespace GameStateService.Models
         [JsonPropertyName("neighbors")]
         public List<string> Neighbors { get; set; }
 
-        [JsonPropertyName("monsters")]
-        public List<Monster> Monsters { get; set; }
+        [JsonPropertyName("monster")]
+        public Monster Monster { get; set; }
 
-        [JsonPropertyName("rewards")]
-        public List<Reward> Rewards { get; set; }
+        [JsonPropertyName("reward")]
+        public Reward Reward { get; set; }
 
         /// <summary>
+    }
+
     /// 몬스터 정보를 나타내는 클래스입니다.
     /// </summary>
     public class Monster
@@ -48,9 +55,6 @@ namespace GameStateService.Models
         
         [JsonPropertyName("attack")]
         public int Attack { get; set; }
-        
-        [JsonPropertyName("defense")]
-        public int Defense { get; set; }
     }
 
     /// <summary>
@@ -61,11 +65,13 @@ namespace GameStateService.Models
         [JsonPropertyName("name")]
         public string Name { get; set; }
         
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
-        
-        [JsonPropertyName("amount")]
-        public int Amount { get; set; }
-    }
+        [JsonPropertyName("health")]
+        public int Health { get; set; }
+
+        [JsonPropertyName("mana")]
+        public int Mana { get; set; }
+
+        [JsonPropertyName("experience")]
+        public int Experience { get; set; }
     }
 }

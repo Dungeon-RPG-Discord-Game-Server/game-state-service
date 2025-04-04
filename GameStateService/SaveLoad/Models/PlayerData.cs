@@ -38,24 +38,13 @@ namespace GameStateService.Models
         /// </summary>
         public int Mana { get; set; }
 
-        /// <summary>
-        /// 플레이어가 소유한 아이템 목록
-        /// </summary>
-        public List<GameItem> Inventory { get; set; }
+        public Weapon? Weapon {get; set;}
 
         /// <summary>
         /// 플레이어가 위치한 맵 파일명
         /// </summary>
-        public Map CurrentMap { get; set; }
-        public GameStateData CurrentGameStateData { get; set; }
-
-        /// <summary>
-        /// PlayerData 클래스의 기본 생성자입니다.
-        /// </summary>
-        public PlayerData()
-        {
-            Inventory = new List<GameItem>();
-        }
+        public MapData? CurrentMapData { get; set; }
+        public GameStateType CurrentGameState { get; set; }
 
         /// <summary>
         /// 플레이어 정보를 간단한 문자열로 반환합니다.
@@ -63,6 +52,29 @@ namespace GameStateService.Models
         public override string ToString()
         {
             return $"PlayerData: {UserName} (ID: {PlayerId}) - Level: {Level}, Exp: {Experience}, Health: {Health}, Mana: {Mana}";
+        }
+    }
+
+    public static class PlayerFactory
+    {
+        public static PlayerData CreateNewPlayer(string playerId, string userName)
+        {
+            return new PlayerData
+            {
+                PlayerId = playerId,
+                UserName = userName,
+                Level = 1,
+                Experience = 0,
+                Health = 100,
+                Mana = 50,
+                Weapon = null,
+                CurrentMapData = null,
+                CurrentGameState = GameStateType.MainMenuState
+            };
+        }
+
+        public static string GetPlayerString(PlayerData data){
+            return $"PlayerData: {data.UserName} (ID: {data.PlayerId}) - Level: {data.Level}, Exp: {data.Experience}, Health: {data.Health}, Mana: {data.Mana}";
         }
     }
 }
