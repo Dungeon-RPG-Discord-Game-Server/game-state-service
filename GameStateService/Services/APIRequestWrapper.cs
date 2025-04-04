@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using GameStateService.Services;
+
 namespace GameStateService.Services
 {
     public class APIRequestWrapper
@@ -20,7 +22,7 @@ namespace GameStateService.Services
         {
             try
             {
-                var json = JsonSerializer.Serialize(payload);
+                var json = JsonSerializerWrapper.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PostAsync(url, content);
@@ -73,7 +75,7 @@ namespace GameStateService.Services
         {
             try
             {
-                var json = JsonSerializer.Serialize(payload);
+                var json = JsonSerializerWrapper.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await _httpClient.PutAsync(url, content);
