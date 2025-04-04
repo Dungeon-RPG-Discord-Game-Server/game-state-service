@@ -20,10 +20,30 @@ namespace GameStateService.Models
         public List<Room> Rooms { get; set; }
     }
 
+    public enum RoomType
+    {
+        Normal,
+        Boss,
+        Treasure,
+        Door
+    }
+
     public class Room
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
+        
+        [JsonPropertyName("room_type")]
+        public RoomType RoomType { get; set; }
+
+        [JsonPropertyName("visited")]
+        public bool Visited { get; set; }
+
+        [JsonPropertyName("x")]
+        public int X { get; set; }
+
+        [JsonPropertyName("y")]
+        public int Y { get; set; }
 
         [JsonPropertyName("description")]
         public string Description { get; set; }
