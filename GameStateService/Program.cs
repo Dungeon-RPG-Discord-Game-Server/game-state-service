@@ -25,12 +25,12 @@ builder.Services.AddSwaggerGen();   // Swagger 설정 (선택)
 var app = builder.Build();
 
 // 2. HTTP 요청 파이프라인 구성
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseDeveloperExceptionPage();
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseRouting();

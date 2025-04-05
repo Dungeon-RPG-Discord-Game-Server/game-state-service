@@ -26,12 +26,14 @@ namespace GameStateService.Utils
 
             var startRoom = new Room
             {
+                Id = 0,
                 X = 0,
                 Y = 0,
                 Visited = true,
                 RoomType = RoomType.Normal,
                 Neighbors = new List<int>()
             };
+
             map[(0, 0)] = startRoom;
             roomList.Add(startRoom);
 
@@ -41,18 +43,20 @@ namespace GameStateService.Utils
             while (roomList.Count < roomCount && frontier.Count > 0)
             {
                 var current = frontier.Dequeue();
-
                 var shuffled = directions.OrderBy(_ => _random.Next()).ToList();
 
                 foreach (var (dx, dy) in shuffled)
                 {
                     int nx = current.X + dx;
                     int ny = current.Y + dy;
+                    var newCoord = (nx, ny);
 
-                    if (map.ContainsKey((nx, ny))) continue;
+                    if (map.ContainsKey(newCoord)) continue;
 
+                    var newRoomId = roomList.Count;
                     var newRoom = new Room
                     {
+                        Id = newRoomId,
                         X = nx,
                         Y = ny,
                         Visited = false,
@@ -60,13 +64,11 @@ namespace GameStateService.Utils
                         Neighbors = new List<int>()
                     };
 
-                    int currentId = roomList.IndexOf(current);
-                    int newRoomId = roomList.Count;
+                    // 양방향 연결
+                    current.Neighbors.Add(newRoom.Id);
+                    newRoom.Neighbors.Add(current.Id);
 
-                    current.Neighbors.Add(newRoomId);
-                    newRoom.Neighbors.Add(currentId);
-
-                    map[(nx, ny)] = newRoom;
+                    map[newCoord] = newRoom;
                     roomList.Add(newRoom);
                     frontier.Enqueue(newRoom);
 
@@ -75,13 +77,31 @@ namespace GameStateService.Utils
                 }
             }
 
-            for (int i = 0; i < roomList.Count; i++)
+            // 모든 방에 대해 좌우 탐색하여 연결된 경우 Neighbors 보강
+            foreach (var room in roomList)
             {
-                roomList[i].Id = i;
+                foreach (var (dx, dy) in directions)
+                {
+                    int nx = room.X + dx;
+                    int ny = room.Y + dy;
+                    var neighborCoord = (nx, ny);
 
+                    if (map.TryGetValue(neighborCoord, out var neighborRoom))
+                    {
+                        if (!room.Neighbors.Contains(neighborRoom.Id))
+                            room.Neighbors.Add(neighborRoom.Id);
+                        if (!neighborRoom.Neighbors.Contains(room.Id))
+                            neighborRoom.Neighbors.Add(room.Id);
+                    }
+                }
+            }
+
+            // 몬스터, 보상 배치
+            foreach (var room in roomList)
+            {
                 if (_random.NextDouble() < 0.3)
                 {
-                    roomList[i].Monster = new Monster
+                    room.Monster = new Monster
                     {
                         Name = "Slime",
                         Level = 1,
@@ -91,7 +111,7 @@ namespace GameStateService.Utils
                 }
                 else if (_random.NextDouble() < 0.2)
                 {
-                    roomList[i].Reward = new Reward
+                    room.Reward = new Reward
                     {
                         Name = "Small Potion",
                         Description = "Restores a bit of HP and MP.",
@@ -102,6 +122,7 @@ namespace GameStateService.Utils
                 }
             }
 
+            // 마지막 방은 보스룸으로
             var lastRoom = roomList.Last();
             lastRoom.RoomType = RoomType.Boss;
             lastRoom.Monster = new Monster
@@ -141,6 +162,7 @@ namespace GameStateService.Utils
                         }
                         else
                         {
+                            Console.WriteLine($"Room ID: {room.Id}, Room Visited: {room.Visited}");
                             string symbol = room.RoomType switch
                             {
                                 RoomType.Normal => room.Visited ? "🟩" : "⬜",
@@ -159,7 +181,6 @@ namespace GameStateService.Utils
                 }
                 sb.AppendLine();
             }
-
             return sb.ToString();
         }
     }

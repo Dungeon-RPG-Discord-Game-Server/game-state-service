@@ -73,7 +73,8 @@ public class GameMoveHandler
             throw new Exception("Player data not found.");
         }
 
-        var currentRoom = playerData.CurrentMapData.Rooms[playerData.CurrentMapData.CurrentRoom];   
+        int currentRoomId = playerData.CurrentMapData.CurrentRoom;
+        var currentRoom = playerData.CurrentMapData.Rooms[currentRoomId];   
         var allRooms = playerData.CurrentMapData.Rooms;
 
         // 방향에 따른 방 ID 가져오기
@@ -86,13 +87,17 @@ public class GameMoveHandler
         //TODO: 방 이동 시 몬스터와의 전투 처리
         
         // 방 방문 처리
-        currentRoom.Visited = true;
+        playerData.CurrentMapData.Rooms[currentRoomId].Visited = true;
+        playerData.CurrentMapData.CurrentRoom = targetRoomId.Value;
+        playerData.CurrentMapData.Rooms[targetRoomId.Value].Visited = true;
         // 방 이동
         playerData.CurrentMapData.CurrentRoom = targetRoomId.Value;
 
         // 플레이어 데이터 업데이트
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
 
+        var check = await _memoryCacheService.GetPlayerDataAsync(userId);
+        Console.WriteLine($"[CHECK] Visited: {check.CurrentMapData.Rooms[targetRoomId.Value].Visited}");
         return targetRoomId.Value;
     }
 }

@@ -94,7 +94,7 @@ namespace GameService.Controllers
             var mapData = data.CurrentMapData;
             var currentRoom = mapData.Rooms[mapData.CurrentRoom];
 
-            var directions = _gameMoveHandler.GetNeighborRoomDirections(currentRoom, mapData.Rooms);
+            var directions = await _gameMoveHandler.GetNeighborRoomDirections(currentRoom, mapData.Rooms);
 
             return Ok(directions);
         }
@@ -118,7 +118,6 @@ namespace GameService.Controllers
             {
                 return BadRequest(new { Message = "❌ Invalid move direction." });
             }
-            await _memoryCacheService.UpdatePlayerDataAsync(userId, data, TimeSpan.FromMinutes(30));
 
             return Ok(new { Message = $"✅ You moved to room {nextRoomId}." });
         }
