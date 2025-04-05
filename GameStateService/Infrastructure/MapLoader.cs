@@ -15,9 +15,9 @@ public static class MapLoader
         /// <returns>비동기적으로 MapData 객체를 반환</returns>
         public static MapData LoadNewMapAsync(string mapName, int mapLevel)
         {
-            int mapCount = mapLevel * 2;
+            int mapCount = mapLevel * 10;
             MapData newMap = MapGenerator.GenerateMap(mapName, mapCount);
-            string visualizedMap = MapGenerator.VisualizeMap(newMap.Rooms);
+            string visualizedMap = MapGenerator.VisualizeMap(newMap.Rooms, newMap.CurrentRoom);
             Console.WriteLine($"Generated Map:\n {visualizedMap}");
 
             return newMap;

@@ -24,7 +24,7 @@ public class GameFlowManager
 
     public async Task<string> GetMapStringAsync(MapData map)
     {
-        string mapString = MapGenerator.VisualizeMap(map.Rooms);
+        string mapString = MapGenerator.VisualizeMap(map.Rooms, map.CurrentRoom);
 
         return mapString;
     }
@@ -55,6 +55,11 @@ public class GameFlowManager
     }
     public async Task<PlayerData> StartNewGameAsync(string userId, int weaponType)
     {
+        bool alreadyRegistered = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
+        if (alreadyRegistered)
+        {
+            await _memoryCacheService.RemovePlayerDataAsync(userId);
+        }
         await _memoryCacheService.RegisterPlayerDataAsync(userId, (WeaponType)weaponType,TimeSpan.FromMinutes(30));
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
 
