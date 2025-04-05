@@ -13,10 +13,12 @@ namespace GameService.Controllers
     {
         private readonly MemoryCacheService _memoryCacheService;
         private readonly GameFlowManager _gameFlowManager;
-        public GameController(MemoryCacheService memoryCacheService, GameFlowManager gameFlowManager)
+        private readonly GameMoveHandler _gameMoveHandler;
+        public GameController(MemoryCacheService memoryCacheService, GameFlowManager gameFlowManager, GameMoveHandler gameMoveHandler)
         {
             _memoryCacheService = memoryCacheService;
             _gameFlowManager = gameFlowManager;
+            _gameMoveHandler = gameMoveHandler;
         }
 
         [HttpGet("{userId}/status")]
@@ -61,6 +63,65 @@ namespace GameService.Controllers
 
             return Content(mapData, "text/plain");
         }
+
+        [HttpGet("{userId}/map/enter")]
+        public async Task<IActionResult> GetEnterMap(string userId)
+        {
+            var data = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+            if (data == null)
+            {
+                return NotFound(new { Message = "❌ User not found." });
+            }
+
+            await _gameFlowManager.EnterNewDungeonAsync(userId);
+
+            var updated = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+            return Content($"✅ You have entered the map: {updated.CurrentMapData.MapName}.", "text/plain");
+        }
+
+        [HttpGet("{userId}/map/neighbors")]
+        public async Task<IActionResult> GetUserMapNeighborsDirections(string userId)
+        {
+            var data = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+            if (data == null)
+            {
+                return NotFound(new { Message = "❌ User not found." });
+            }
+
+            var mapData = data.CurrentMapData;
+            var currentRoom = mapData.Rooms[mapData.CurrentRoom];
+
+            var directions = _gameMoveHandler.GetNeighborRoomDirections(currentRoom, mapData.Rooms);
+
+            return Ok(directions);
+        }
+
+        [HttpPost("{userId}/move")]
+        public async Task<IActionResult> PostUserMoveRoom(string userId, [FromBody] MovePlayerRequestDto request)
+        {
+            var data = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+            if (data.CurrentGameState != GameStateType.ExplorationState){
+                return BadRequest(new { Message = "❌ You are not in the exploration state." });
+            }
+
+            if (data == null)
+            {
+                return NotFound(new { Message = "❌ User not found." });
+            }
+
+            int? nextRoomId = await _gameMoveHandler.MovePlayerAsync(userId, request.Direction);
+            if (nextRoomId == null)
+            {
+                return BadRequest(new { Message = "❌ Invalid move direction." });
+            }
+            await _memoryCacheService.UpdatePlayerDataAsync(userId, data, TimeSpan.FromMinutes(30));
+
+            return Ok(new { Message = $"✅ You moved to room {nextRoomId}." });
+        }
         
         [HttpPost("register")]
         public async Task<IActionResult> PostRegisterPlayer([FromBody] RegisterPlayerRequestDto request)
@@ -71,7 +132,7 @@ namespace GameService.Controllers
             {
                 PlayerId = request.UserId,
                 Registered = true,
-                Message = "✅ User successfully registered."
+                Message = "✅ You have been successfully registered for the adventure!\nWelcome, brave traveler. Your journey begins now..."
             });
         }
 
@@ -87,11 +148,5 @@ namespace GameService.Controllers
             };
             return Ok(result);
         }
-    }
-
-    public class ChoiceResponse
-    {
-        public string UserId { get; set; }
-        public int SelectedOption { get; set; }
     }
 }

@@ -29,6 +29,17 @@ public class GameFlowManager
         return mapString;
     }
 
+    public async Task<GameStateType> GetCurrentGameStateAsync(string userId)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
+
+        return playerData.CurrentGameState;
+    }
+
     public async Task ChangeGameStateAsync(string userId, GameStateType newState)
     {
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
@@ -62,6 +73,17 @@ public class GameFlowManager
         }
         await _memoryCacheService.RegisterPlayerDataAsync(userId, (WeaponType)weaponType,TimeSpan.FromMinutes(30));
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+        return playerData;
+    }
+
+    public async Task<PlayerData> EnterNewDungeonAsync(string userId)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
 
         await AssginNewMapToPlayerAsync(userId, "Tutorial", 1);
         await ChangeGameStateAsync(userId, GameStateType.ExplorationState);
