@@ -27,7 +27,6 @@ namespace GameStateService.Models
 
     public class Skill
     {
-        public string Name { get; set; }
         public int ManaCost { get; set; }
         public int Damage { get; set; }
     }
@@ -36,5 +35,33 @@ namespace GameStateService.Models
     {
         Sword,
         MagicWand,
+    }
+
+    public static class WeaponFactory
+    {
+        public static Weapon CreateWeapon(string name, int attackPower, int manaCost, WeaponType type)
+        {
+            return new Weapon
+            {
+                Name = name,
+                AttackPower = attackPower,
+                ManaCost = manaCost,
+                Type = type
+            };
+        }
+
+        public static string UpgradeWeapon(Weapon weapon, int upgradePower, int upgradeManaCost)
+        {
+            if (weapon == null)
+            {
+                return "Weapon not found.";
+            }
+
+            // 업그레이드 성공
+            weapon.AttackPower += upgradePower;
+            weapon.ManaCost += upgradeManaCost;
+
+            return $"{weapon.Name} has been upgraded! New Attack Power: {weapon.AttackPower} and Mana Cost: {weapon.ManaCost}.";
+        }
     }
 }

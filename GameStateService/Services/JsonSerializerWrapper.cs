@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace GameStateService.Services
 {
@@ -8,7 +9,8 @@ namespace GameStateService.Services
         private static readonly JsonSerializerOptions _options = new()
         {
             PropertyNameCaseInsensitive = true,
-            WriteIndented = false // 필요 시 true 로 설정
+            WriteIndented = false, // 필요 시 true 로 설정
+            Converters = { new JsonStringEnumConverter() }
         };
 
         public static string Serialize<T>(T obj)

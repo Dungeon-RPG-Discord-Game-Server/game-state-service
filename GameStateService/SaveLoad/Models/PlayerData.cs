@@ -51,13 +51,27 @@ namespace GameStateService.Models
         /// </summary>
         public override string ToString()
         {
-            return $"PlayerData: {UserName} (ID: {PlayerId}) - Level: {Level}, Exp: {Experience}, Health: {Health}, Mana: {Mana}";
+            string weaponInfo = Weapon != null
+                ? $"🗡️ Weapon: {Weapon.Name} (ATK: {Weapon.AttackPower}, Mana Cost: {Weapon.ManaCost})"
+                : "❌ No weapon equipped";
+
+            string mapInfo = CurrentMapData != null
+                ? $"🗺️ Current Map: {CurrentMapData.MapName}"
+                : "🌐 No map assigned";
+
+            return
+                $@"👤 **{UserName}**
+                🏅 Level: {Level}    ✨ EXP: {Experience}
+                ❤️ Health: {Health}    🔷 Mana: {Mana}
+                {weaponInfo}
+                {mapInfo}
+                🎮 State: {CurrentGameState}";
         }
     }
 
     public static class PlayerFactory
     {
-        public static PlayerData CreateNewPlayer(string playerId, string userName)
+        public static PlayerData CreatePlayerWithWeapon(string playerId, string userName, Weapon weapon)
         {
             return new PlayerData
             {
@@ -67,12 +81,33 @@ namespace GameStateService.Models
                 Experience = 0,
                 Health = 100,
                 Mana = 50,
-                Weapon = null,
+                Weapon = weapon,
                 CurrentMapData = null,
                 CurrentGameState = GameStateType.MainMenuState
             };
         }
+        public static PlayerData CreateNewPlayer(string playerId, string userName, WeaponType weaponType)
+        {
+            PlayerData playerData;
 
+            switch (weaponType)
+            {
+                case WeaponType.Sword:
+                    playerData = CreatePlayerWithWeapon(playerId, userName, WeaponFactory.CreateWeapon("Basic Sword", 10, 0, weaponType));
+                    playerData.Health = 200; // Sword users have higher health
+                    playerData.Mana = 30; // Sword users have lower mana
+                    break;
+                case WeaponType.MagicWand:
+                    playerData = CreatePlayerWithWeapon(playerId, userName, WeaponFactory.CreateWeapon("Basic Magic Wand", 20, 5, weaponType));
+                    playerData.Health = 100; // Magic wand users have lower health
+                    playerData.Mana = 100; // Magic wand users have higher mana
+                    break;
+                default:
+                    throw new ArgumentException("Invalid weapon type");
+            }
+            
+            return playerData;
+        }
         public static string GetPlayerString(PlayerData data){
             return $"PlayerData: {data.UserName} (ID: {data.PlayerId}) - Level: {data.Level}, Exp: {data.Experience}, Health: {data.Health}, Mana: {data.Mana}";
         }
