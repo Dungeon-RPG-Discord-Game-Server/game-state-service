@@ -12,6 +12,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<APIRequestWrapper>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<MemoryCacheService>();
+builder.Services.AddSingleton<GameFlowManager>();
 
 builder.Services.AddControllers();  // MVC 컨트롤러 등록
 builder.Services.AddEndpointsApiExplorer();

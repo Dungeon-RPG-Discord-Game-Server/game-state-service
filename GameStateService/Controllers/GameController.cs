@@ -11,10 +11,13 @@ namespace GameService.Controllers
     public class GameController : ControllerBase
     {
         private readonly MemoryCacheService _memoryCacheService;
-        public GameController(MemoryCacheService memoryCacheService)
+        private readonly GameFlowManager _gameFlowManager;
+        public GameController(MemoryCacheService memoryCacheService, GameFlowManager gameFlowManager)
         {
             _memoryCacheService = memoryCacheService;
+            _gameFlowManager = gameFlowManager;
         }
+        
         [HttpGet("{userId}/status")]
         public async Task<IActionResult> GetUserOnline(string userId)
         {
