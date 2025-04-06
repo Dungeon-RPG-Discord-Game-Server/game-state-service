@@ -105,7 +105,7 @@ namespace GameStateService.Utils
                     {
                         Name = "Slime",
                         Level = 1,
-                        Health = 20,
+                        Health = 10,
                         MaxHealth = 20,
                         Attack = 5
                     };
@@ -138,7 +138,7 @@ namespace GameStateService.Utils
             {
                 Name = "Boss Goblin",
                 Level = 5,
-                Health = 100,
+                Health = 10,
                 MaxHealth = 100,
                 Attack = 20
             };
