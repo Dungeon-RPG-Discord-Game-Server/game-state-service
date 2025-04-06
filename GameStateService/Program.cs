@@ -14,6 +14,7 @@ builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<MemoryCacheService>();
 builder.Services.AddSingleton<GameFlowManager>();
 builder.Services.AddSingleton<GameMoveHandler>(); // GameStateService 등록
+builder.Services.AddSingleton<GameBattleHandler>(); // GameStateService 등록
 
 builder.Services.AddControllers();  // MVC 컨트롤러 등록
 builder.Services.AddEndpointsApiExplorer();

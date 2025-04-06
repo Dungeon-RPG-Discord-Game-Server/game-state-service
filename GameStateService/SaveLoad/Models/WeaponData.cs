@@ -22,7 +22,7 @@ namespace GameStateService.Models
         /// </summary>
         public WeaponType Type { get; set; }
 
-        public Skill? Skill { get; set; }
+        public Skill Skill { get; set; }
     }
 
     public class Skill
@@ -39,14 +39,31 @@ namespace GameStateService.Models
 
     public static class WeaponFactory
     {
+        public static Skill CreateSkill(int manaCost, int damage)
+        {
+            return new Skill
+            {
+                ManaCost = manaCost,
+                Damage = damage
+            };
+        }
         public static Weapon CreateWeapon(string name, int attackPower, int manaCost, WeaponType type)
         {
+            int skillManaCost;
+            if (manaCost > 0)
+            {
+                skillManaCost = manaCost * 2; // 예시: 스킬의 마나 비용은 무기 마나 비용의 절반
+            }else{
+                skillManaCost = 5;
+            }
+
             return new Weapon
             {
                 Name = name,
                 AttackPower = attackPower,
                 ManaCost = manaCost,
-                Type = type
+                Type = type,
+                Skill = CreateSkill(skillManaCost, attackPower * 2) // 예시: 스킬 데미지는 공격력의 두 배
             };
         }
 
@@ -60,6 +77,7 @@ namespace GameStateService.Models
             // 업그레이드 성공
             weapon.AttackPower += upgradePower;
             weapon.ManaCost += upgradeManaCost;
+            weapon.Skill = CreateSkill(weapon.ManaCost * 2, weapon.AttackPower * 2); // 스킬도 업그레이드
 
             return $"{weapon.Name} has been upgraded! New Attack Power: {weapon.AttackPower} and Mana Cost: {weapon.ManaCost}.";
         }

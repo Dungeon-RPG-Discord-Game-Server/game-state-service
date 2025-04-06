@@ -65,22 +65,23 @@ public class GameBattleHandler
         // For example, reduce monster's health by player's attack power
         if (skillUsed)
         {
+            if (playerData.Weapon.Skill == null)
+                throw new Exception("⚠️ This weapon has no skill!");
             // Assuming playerData.Weapon has a special skill
             playerData.Mana -= playerData.Weapon.Skill.ManaCost;
-            monster.Health -= playerData.Weapon.Skill.Damage; // Double damage for skill
+            monster.Health = Math.Max(monster.Health - playerData.Weapon.Skill.Damage, 0);
             attackMessage = $"✨ You unleashed a powerful skill on 🐉 {monster.Name} and dealt **{playerData.Weapon.Skill.Damage}** damage!";
         }
         else
         {
             // Normal attack
             playerData.Mana -= playerData.Weapon.ManaCost;
-            monster.Health -= playerData.Weapon.AttackPower;
+            monster.Health = Math.Max(monster.Health - playerData.Weapon.AttackPower, 0);
             attackMessage = $"🗡️ You attacked the 🐉 {monster.Name} and dealt **{playerData.Weapon.AttackPower}** damage!";
         }
 
         if (monster.Health <= 0)
         {
-            currentRoom.Monster = null; // Monster defeated
             string message = $@"
             💥 You defeated the 🐉 {monster.Name}!
 
@@ -93,8 +94,11 @@ public class GameBattleHandler
             playerData.Health += reward.Health;
             playerData.Mana += reward.Mana;
             playerData.Experience += reward.Experience;
-            
-            playerData.CurrentMapData.Rooms[CurrentRoomId].Reward = null; // Clear reward after collection
+
+            currentRoom.Monster = null; // Monster defeated
+            currentRoom.Reward = null; // Clear reward after collection
+            await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
+            await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.ExplorationState);
             return message;
         }
 

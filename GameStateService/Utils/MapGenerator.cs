@@ -142,6 +142,14 @@ namespace GameStateService.Utils
                 MaxHealth = 100,
                 Attack = 20
             };
+            lastRoom.Reward = new Reward
+                    {
+                        Name = "Small Potion",
+                        Description = "Restores a bit of HP and MP.",
+                        Health = 10,
+                        Mana = 5,
+                        Experience = 10
+                    };
 
             return new MapData
             {
