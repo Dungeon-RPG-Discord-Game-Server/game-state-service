@@ -90,4 +90,19 @@ public class GameFlowManager
 
         return playerData;
     }
+
+    public async Task UpdatePlayerStatsAsync(string userId, int health, int mana, int experience)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
+
+        playerData.Health += health;
+        playerData.Mana += mana;
+        playerData.Experience += experience;
+
+        await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
+    }
 }

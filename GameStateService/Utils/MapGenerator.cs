@@ -106,7 +106,16 @@ namespace GameStateService.Utils
                         Name = "Slime",
                         Level = 1,
                         Health = 20,
+                        MaxHealth = 20,
                         Attack = 5
+                    };
+                    room.Reward = new Reward
+                    {
+                        Name = "Small Potion",
+                        Description = "Restores a bit of HP and MP.",
+                        Health = 10,
+                        Mana = 5,
+                        Experience = 10
                     };
                 }
                 else if (_random.NextDouble() < 0.2)
@@ -130,6 +139,7 @@ namespace GameStateService.Utils
                 Name = "Boss Goblin",
                 Level = 5,
                 Health = 100,
+                MaxHealth = 100,
                 Attack = 20
             };
 

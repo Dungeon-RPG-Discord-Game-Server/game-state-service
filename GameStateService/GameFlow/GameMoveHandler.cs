@@ -17,19 +17,23 @@ public class GameMoveHandler
     {
         var directions = new List<string>();
 
-        foreach (var neighborId in currentRoom.Neighbors)
-        {
-            var neighbor = allRooms.FirstOrDefault(r => r.Id == neighborId);
-            if (neighbor == null) continue;
+        var neighbors = currentRoom.Neighbors
+            .Select(id => allRooms.FirstOrDefault(r => r.Id == id))
+            .Where(r => r != null)
+            .ToList();
 
-            int dx = neighbor.X - currentRoom.X;
-            int dy = neighbor.Y - currentRoom.Y;
-
-            if (dx == 1) directions.Add("right");
-            else if (dx == -1) directions.Add("left");
-            else if (dy == 1) directions.Add("up");
-            else if (dy == -1) directions.Add("down");
-        }
+        // right
+        if (neighbors.Any(r => r.X - currentRoom.X == 1 && r.Y == currentRoom.Y))
+            directions.Add("right");
+        // left
+        if (neighbors.Any(r => r.X - currentRoom.X == -1 && r.Y == currentRoom.Y))
+            directions.Add("left");
+        // up
+        if (neighbors.Any(r => r.Y - currentRoom.Y == 1 && r.X == currentRoom.X))
+            directions.Add("up");
+        // down
+        if (neighbors.Any(r => r.Y - currentRoom.Y == -1 && r.X == currentRoom.X))
+            directions.Add("down");
 
         return directions;
     }
@@ -83,8 +87,6 @@ public class GameMoveHandler
         {
             throw new Exception("Invalid move direction.");
         }
-
-        //TODO: 방 이동 시 몬스터와의 전투 처리
         
         // 방 방문 처리
         playerData.CurrentMapData.Rooms[currentRoomId].Visited = true;

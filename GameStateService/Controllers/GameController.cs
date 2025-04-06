@@ -119,7 +119,32 @@ namespace GameService.Controllers
                 return BadRequest(new { Message = "❌ Invalid move direction." });
             }
 
+            data = await _memoryCacheService.GetPlayerDataAsync(userId);
+            var currentRoom = data.CurrentMapData.Rooms[data.CurrentMapData.CurrentRoom];
+            bool isMonsterPresent = currentRoom.Monster != null;
+            if (isMonsterPresent)
+            {
+                data.CurrentGameState = GameStateType.BattleState;
+                await _memoryCacheService.UpdatePlayerDataAsync(userId, data, TimeSpan.FromMinutes(30));
+                return Ok(new { Message = "⚔️ You have encountered a monster! Prepare for battle!" });
+            }
+
             return Ok(new { Message = $"✅ You moved to room {nextRoomId}." });
+        }
+
+        [HttpGet("{userId}/state")]
+        public async Task<IActionResult> GetUserGameState(string userId)
+        {
+            var data = await _memoryCacheService.GetPlayerDataAsync(userId);
+
+            if (data == null)
+            {
+                return NotFound(new { Message = "❌ User not found." });
+            }
+
+            var gameState = await _gameFlowManager.GetCurrentGameStateAsync(userId);
+
+            return Content(gameState.ToString(), "text/plain");
         }
         
         [HttpPost("register")]

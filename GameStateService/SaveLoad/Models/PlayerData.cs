@@ -32,11 +32,13 @@ namespace GameStateService.Models
         /// 플레이어의 현재 체력
         /// </summary>
         public int Health { get; set; }
+        public int MaxHealth { get; set; }
 
         /// <summary>
         /// 플레이어의 현재 마나
         /// </summary>
         public int Mana { get; set; }
+        public int MaxMana { get; set; }
 
         public Weapon? Weapon {get; set;}
 
@@ -62,7 +64,7 @@ namespace GameStateService.Models
             return
                 $@"👤 **{UserName}**
                 🏅 Level: {Level}    ✨ EXP: {Experience}
-                ❤️ Health: {Health}    🔷 Mana: {Mana}
+                ❤️ Health: {Health} / {MaxHealth}   🔵 Mana: {Mana} / {MaxMana}
                 {weaponInfo}
                 {mapInfo}
                 🎮 State: {CurrentGameState}";
@@ -80,7 +82,9 @@ namespace GameStateService.Models
                 Level = 1,
                 Experience = 0,
                 Health = 100,
+                MaxHealth = 100,
                 Mana = 50,
+                MaxMana = 50,
                 Weapon = weapon,
                 CurrentMapData = null,
                 CurrentGameState = GameStateType.MainMenuState
@@ -105,6 +109,9 @@ namespace GameStateService.Models
                 default:
                     throw new ArgumentException("Invalid weapon type");
             }
+
+            playerData.MaxHealth = playerData.Health;
+            playerData.MaxMana = playerData.Mana;
             
             return playerData;
         }
