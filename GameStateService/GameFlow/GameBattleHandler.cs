@@ -1,6 +1,7 @@
 using GameStateService.Models;
 using GameStateService.Utils;
 using GameStateService.Services;
+using System.Security.Cryptography.X509Certificates;
 
 public class GameBattleHandler
 {
@@ -11,6 +12,22 @@ public class GameBattleHandler
     {
         _memoryCacheService = memoryCacheService;
         _gameFlowManager = gameFlowManager;
+    }
+
+    public async Task<bool> BossRoomClearedAsync(string userId)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
+        var bossRoom = playerData.CurrentMapData.Rooms[playerData.CurrentMapData.Rooms.Count - 1];
+        var boss = bossRoom.Monster;
+        if (boss == null)
+        {
+            return true; // No monster in the room
+        }
+        return false; // Monster still alive
     }
 
     public async Task<string> GetBattleSummaryAsync(string userId)

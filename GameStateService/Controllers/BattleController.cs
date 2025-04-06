@@ -36,6 +36,20 @@ namespace GameService.Controllers
             }
         }
 
+        [HttpGet("{userId}/boss")]
+        public async Task<IActionResult> GetBossCleared(string userId)
+        {
+            try
+            {
+                bool bossCleared = await _gameBattleHandler.BossRoomClearedAsync(userId);
+                return Ok(bossCleared);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
         [HttpPost("{userId}/attack")]
         public async Task<IActionResult> AttackMonster(string userId, [FromQuery] bool skillUsed = false)
         {
