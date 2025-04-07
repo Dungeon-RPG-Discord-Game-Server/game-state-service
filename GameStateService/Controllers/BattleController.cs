@@ -51,12 +51,40 @@ namespace GameService.Controllers
         }
 
         [HttpPost("{userId}/attack")]
-        public async Task<IActionResult> AttackMonster(string userId, [FromQuery] bool skillUsed = false)
+        public async Task<IActionResult> PostAttackMonster(string userId, [FromQuery] bool skillUsed = false)
         {
             try
             {
                 string attackMessage = await _gameBattleHandler.AttackMonsterAsync(userId, skillUsed);
                 return Content(attackMessage, "text/plain");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("{userId}/monster-attack")]
+        public async Task<IActionResult> GetMonsterAttack(string userId)
+        {
+            try
+            {
+                string monsterAttackMessage = await _gameBattleHandler.MonsterAttackAsync(userId);
+                return Content(monsterAttackMessage, "text/plain");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("{userId}/runaway")]
+        public async Task<IActionResult> GetRunaway(string userId)
+        {
+            try
+            {
+                string runawayMessage = await _gameBattleHandler.RunAwayAsync(userId);
+                return Content(runawayMessage, "text/plain");
             }
             catch (Exception ex)
             {

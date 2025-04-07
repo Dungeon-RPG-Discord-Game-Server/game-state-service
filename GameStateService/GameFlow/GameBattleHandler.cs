@@ -151,11 +151,46 @@ public class GameBattleHandler
             Your HP has dropped to 0.  
             The adventure ends here... for now.
             ".Trim();
+            await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
+            await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.MainMenuState);
             return message; // Player defeated
         }
 
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
 
         return $"💢 The 🐉 {monster.Name} attacked you and dealt **{monster.Attack}** damage!";
+    }
+
+    public async Task<string> RunAwayAsync(string userId)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
+        int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
+        var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
+        var monster = currentRoom.Monster;
+        if (monster == null)
+        {
+            return "😌 The room is quiet. No monsters here...";
+        }
+
+        bool escaped = new Random().Next(0, 2) == 1; // 50% chance to escape
+        if (currentRoom.RoomType == RoomType.Boss)
+        {
+            return "❌ You cannot escape from the boss!";
+        }
+
+        if (escaped)
+        {
+            string message = $@"
+            🏃 You successfully ran away from the 🐉 {monster.Name}!
+            ".Trim();
+            await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.ExplorationState);
+            return message;
+        }
+
+        return $"💢 You couldn't escape! The 🐉 {monster.Name} is still chasing you!";
     }
 }

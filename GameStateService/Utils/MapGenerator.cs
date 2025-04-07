@@ -183,7 +183,9 @@ namespace GameStateService.Utils
                             Console.WriteLine($"Room ID: {room.Id}, Room Visited: {room.Visited}");
                             string symbol = room.RoomType switch
                             {
-                                RoomType.Normal => room.Visited ? "🟩" : "⬜",
+                                RoomType.Normal => room.Visited
+                                    ? (room.Monster != null ? "🐉" : "🟩")
+                                    : "⬜",
                                 RoomType.Boss => "🟥",
                                 RoomType.Treasure => "💰",
                                 RoomType.Door => "🚪",
