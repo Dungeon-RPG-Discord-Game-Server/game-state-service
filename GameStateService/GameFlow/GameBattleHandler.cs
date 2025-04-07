@@ -3,6 +3,8 @@ using GameStateService.Utils;
 using GameStateService.Services;
 using System.Security.Cryptography.X509Certificates;
 
+using GameStateService.Dtos;
+
 public class GameBattleHandler
 {
     private readonly MemoryCacheService _memoryCacheService;
@@ -161,9 +163,10 @@ public class GameBattleHandler
         return $"💢 The 🐉 {monster.Name} attacked you and dealt **{monster.Attack}** damage!";
     }
 
-    public async Task<string> RunAwayAsync(string userId)
+    public async Task<BattleEscapeResultDto> RunAwayAsync(string userId)
     {
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        var battleEscapeResult = new BattleEscapeResultDto();
         if (playerData == null)
         {
             throw new Exception("Player data not found.");
@@ -173,13 +176,17 @@ public class GameBattleHandler
         var monster = currentRoom.Monster;
         if (monster == null)
         {
-            return "😌 The room is quiet. No monsters here...";
+            battleEscapeResult.IsEscaped = true;
+            battleEscapeResult.Message = "😌 The room is quiet. No monsters here...";
+            return battleEscapeResult;
         }
 
         bool escaped = new Random().Next(0, 2) == 1; // 50% chance to escape
         if (currentRoom.RoomType == RoomType.Boss)
         {
-            return "❌ You cannot escape from the boss!";
+            battleEscapeResult.IsEscaped = false;
+            battleEscapeResult.Message = "❌ You cannot escape from the boss!";
+            return battleEscapeResult;
         }
 
         if (escaped)
@@ -188,9 +195,13 @@ public class GameBattleHandler
             🏃 You successfully ran away from the 🐉 {monster.Name}!
             ".Trim();
             await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.ExplorationState);
-            return message;
+            battleEscapeResult.IsEscaped = true;
+            battleEscapeResult.Message = message;
+            return battleEscapeResult;
         }
 
-        return $"💢 You couldn't escape! The 🐉 {monster.Name} is still chasing you!";
+        battleEscapeResult.IsEscaped = false;
+        battleEscapeResult.Message =  $"💢 You couldn't escape! The 🐉 {monster.Name} is still chasing you!";
+        return battleEscapeResult;
     }
 }

@@ -78,13 +78,13 @@ namespace GameService.Controllers
             }
         }
 
-        [HttpGet("{userId}/runaway")]
+        [HttpGet("{userId}/run")]
         public async Task<IActionResult> GetRunaway(string userId)
         {
             try
             {
-                string runawayMessage = await _gameBattleHandler.RunAwayAsync(userId);
-                return Content(runawayMessage, "text/plain");
+                var resultDto = await _gameBattleHandler.RunAwayAsync(userId);
+                return Ok(resultDto);
             }
             catch (Exception ex)
             {
