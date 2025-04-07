@@ -91,5 +91,19 @@ namespace GameService.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpGet("{userId}/moster")]
+        public async Task<IActionResult> GetMonsterExist(string userId)
+        {
+            try
+            {
+                bool monsterExists = await _gameBattleHandler.MonsterExistsAsync(userId);
+                return Ok(monsterExists);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

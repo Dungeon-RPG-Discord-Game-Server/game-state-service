@@ -16,6 +16,19 @@ public class GameBattleHandler
         _gameFlowManager = gameFlowManager;
     }
 
+    public async Task<bool> MonsterExistsAsync(string userId)
+    {
+        var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        if (playerData == null)
+        {
+            throw new Exception("Player data not found.");
+        }
+        int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
+        var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
+        var monster = currentRoom.Monster;
+        return monster != null; // Return true if monster exists
+    }
+
     public async Task<bool> BossRoomClearedAsync(string userId)
     {
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
@@ -25,11 +38,7 @@ public class GameBattleHandler
         }
         var bossRoom = playerData.CurrentMapData.Rooms[playerData.CurrentMapData.Rooms.Count - 1];
         var boss = bossRoom.Monster;
-        if (boss == null)
-        {
-            return true; // No monster in the room
-        }
-        return false; // Monster still alive
+        return boss == null; // Monster still alive
     }
 
     public async Task<string> GetBattleSummaryAsync(string userId)
@@ -148,6 +157,7 @@ public class GameBattleHandler
         if (playerData.Health <= 0)
         {
             string message = $@"
+            💢 The 🐉 {monster.Name} attacked you and dealt **{monster.Attack}** damage!
             ☠️ **You have been defeated...**
 
             Your HP has dropped to 0.  
