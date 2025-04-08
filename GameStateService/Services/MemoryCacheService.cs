@@ -28,7 +28,7 @@ namespace GameStateService.Services
                 }
 
                 PlayerData data = PlayerFactory.CreateNewPlayer(playerId, playerId, weaponType);
-                string strData = JsonSerializer.Serialize(data);
+                string strData = JsonSerializerWrapper.Serialize(data);
                 _memoryCache.Set(playerId, strData, options);
             }
             catch (Exception ex)
@@ -47,12 +47,25 @@ namespace GameStateService.Services
                     options.SetAbsoluteExpiration(expiration.Value);
                 }
 
-                string strData = JsonSerializer.Serialize(data);
+                string strData = JsonSerializerWrapper.Serialize(data);
                 _memoryCache.Set(playerId, strData, options);
             }
             catch (Exception ex)
             {
                 throw new Exception($"❌ [UpdatePlayerDataAsync] Failed to update data for player {playerId}: {ex.Message}");
+            }
+        }
+
+        public async Task<bool> IsPlayerDataExistAsync(string playerId)
+        {
+            try
+            {
+                bool isKeyExist = _memoryCache.TryGetValue(playerId, out string data);
+                return isKeyExist;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"❌ [IsPlayerDataExistAsync] Failed to check existence of data for player {playerId}: {ex.Message}");
             }
         }
 
@@ -66,7 +79,7 @@ namespace GameStateService.Services
                     throw new Exception($"⚠️ [GetPlayerDataAsync] No data found for player {playerId}");
                 }
 
-                return JsonSerializer.Deserialize<PlayerData>(data);
+                return JsonSerializerWrapper.Deserialize<PlayerData>(data);
             }
             catch (Exception ex)
             {

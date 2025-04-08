@@ -66,7 +66,7 @@ public class GameFlowManager
     }
     public async Task<PlayerData> StartNewGameAsync(string userId, int weaponType)
     {
-        bool alreadyRegistered = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
+        bool alreadyRegistered = await _memoryCacheService.IsPlayerDataExistAsync(userId);
         if (alreadyRegistered)
         {
             await _memoryCacheService.RemovePlayerDataAsync(userId);

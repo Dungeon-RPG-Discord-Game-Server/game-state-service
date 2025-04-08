@@ -25,6 +25,7 @@ namespace GameService.Controllers
             }
 
             string serviceName = configuration["Logging:ServiceName"];
+            _logger = new Logger(serviceName);
             _memoryCacheService = memoryCacheService;
             _gameFlowManager = gameFlowManager;
             _gameMoveHandler = gameMoveHandler;
