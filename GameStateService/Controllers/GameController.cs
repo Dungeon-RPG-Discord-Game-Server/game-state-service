@@ -74,7 +74,19 @@ namespace GameService.Controllers
                         return NotFound(new { Message = "❌ User not found." });
                     }
 
-                    string playerSummary = data.ToString();
+                    string weaponInfo = data.Weapon != null
+                            ? $"🗡️ Weapon: {data.Weapon.Name} (ATK: {data.Weapon.AttackPower}, Mana Cost: {data.Weapon.ManaCost})"
+                            : "❌ No weapon equipped";
+
+                    string mapInfo = data.CurrentMapData != null
+                            ? $"🗺️ Current Map: {data.CurrentMapData.MapName}"
+                            : "🌐 No map assigned";
+                    string playerSummary =
+                            $@"👤 **{data.UserName}**
+                            🏅 Level: {data.Level}    ✨ EXP: {data.Experience}
+                            ❤️ Health: {data.Health} / {data.MaxHealth}   🔵 Mana: {data.Mana} / {data.MaxMana}
+                            {weaponInfo}
+                            {mapInfo}";
 
                     return Content(playerSummary, "text/plain");
                 }

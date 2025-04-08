@@ -53,21 +53,7 @@ namespace GameStateService.Models
         /// </summary>
         public override string ToString()
         {
-            string weaponInfo = Weapon != null
-                ? $"🗡️ Weapon: {Weapon.Name} (ATK: {Weapon.AttackPower}, Mana Cost: {Weapon.ManaCost})"
-                : "❌ No weapon equipped";
-
-            string mapInfo = CurrentMapData != null
-                ? $"🗺️ Current Map: {CurrentMapData.MapName}"
-                : "🌐 No map assigned";
-
-            return
-                $@"👤 **{UserName}**
-                🏅 Level: {Level}    ✨ EXP: {Experience}
-                ❤️ Health: {Health} / {MaxHealth}   🔵 Mana: {Mana} / {MaxMana}
-                {weaponInfo}
-                {mapInfo}
-                🎮 State: {CurrentGameState}";
+            return $"PlayerData: {UserName} (ID: {PlayerId}) - Level: {Level}, Exp: {Experience}, Health: {Health}, Mana: {Mana}, CurrentMap: {CurrentMapData?.MapName}, GameState: {CurrentGameState}";
         }
     }
 
