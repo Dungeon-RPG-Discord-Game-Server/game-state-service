@@ -19,42 +19,71 @@ namespace GameStateService.Services
 
         public async Task RegisterPlayerDataAsync(string playerId, WeaponType weaponType, TimeSpan? expiration = null)
         {
-            var options = new MemoryCacheEntryOptions();
-            if (expiration.HasValue)
+            try
             {
-                options.SetAbsoluteExpiration(expiration.Value);
-            }
-            PlayerData data = PlayerFactory.CreateNewPlayer(playerId, playerId, weaponType);
-            string strData = JsonSerializer.Serialize(data);
-            _memoryCache.Set(playerId, strData, options);
+                var options = new MemoryCacheEntryOptions();
+                if (expiration.HasValue)
+                {
+                    options.SetAbsoluteExpiration(expiration.Value);
+                }
 
-            Console.WriteLine(data.ToString());
+                PlayerData data = PlayerFactory.CreateNewPlayer(playerId, playerId, weaponType);
+                string strData = JsonSerializer.Serialize(data);
+                _memoryCache.Set(playerId, strData, options);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"❌ [RegisterPlayerDataAsync] Failed to register data for player {playerId}: {ex.Message}");
+            }
         }
 
         public async Task UpdatePlayerDataAsync(string playerId, PlayerData data, TimeSpan? expiration = null)
         {
-            var options = new MemoryCacheEntryOptions();
-            if (expiration.HasValue)
+            try
             {
-                options.SetAbsoluteExpiration(expiration.Value);
+                var options = new MemoryCacheEntryOptions();
+                if (expiration.HasValue)
+                {
+                    options.SetAbsoluteExpiration(expiration.Value);
+                }
+
+                string strData = JsonSerializer.Serialize(data);
+                _memoryCache.Set(playerId, strData, options);
             }
-            string strData = JsonSerializer.Serialize(data);
-            _memoryCache.Set(playerId, strData, options);
+            catch (Exception ex)
+            {
+                throw new Exception($"❌ [UpdatePlayerDataAsync] Failed to update data for player {playerId}: {ex.Message}");
+            }
         }
 
         public async Task<PlayerData> GetPlayerDataAsync(string playerId)
         {
-            bool isKeyExist = _memoryCache.TryGetValue(playerId, out string data);
-            if (!isKeyExist)
+            try
             {
-                return null; // 데이터가 없을 경우 null 반환
+                bool isKeyExist = _memoryCache.TryGetValue(playerId, out string data);
+                if (!isKeyExist || string.IsNullOrWhiteSpace(data))
+                {
+                    throw new Exception($"⚠️ [GetPlayerDataAsync] No data found for player {playerId}");
+                }
+
+                return JsonSerializer.Deserialize<PlayerData>(data);
             }
-            return JsonSerializer.Deserialize<PlayerData>(data);
+            catch (Exception ex)
+            {
+                throw new Exception($"❌ [GetPlayerDataAsync] Failed to retrieve data for player {playerId}: {ex.Message}");
+            }
         }
 
         public async Task RemovePlayerDataAsync(string playerId)
         {
-            _memoryCache.Remove(playerId);
+            try
+            {
+                _memoryCache.Remove(playerId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"❌ [RemovePlayerDataAsync] Failed to remove data for player {playerId}: {ex.Message}");
+            }
         }
     }
 }

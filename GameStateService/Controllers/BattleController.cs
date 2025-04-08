@@ -14,9 +14,19 @@ namespace GameService.Controllers
         private readonly MemoryCacheService _memoryCacheService;
         private readonly GameFlowManager _gameFlowManager;
         private readonly GameBattleHandler _gameBattleHandler;
+        private readonly IConfiguration _configuration;
+        private readonly Logger _logger;
 
-        public BattleController(MemoryCacheService memoryCacheService, GameFlowManager gameFlowManager, GameBattleHandler gameBattleHandler)
+        public BattleController(MemoryCacheService memoryCacheService, GameFlowManager gameFlowManager, GameBattleHandler gameBattleHandler, IConfiguration configuration)
         {
+            _configuration = configuration;
+            if (null == _configuration)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            string serviceName = configuration["Logging:ServiceName"];
+            _logger = new Logger(serviceName);
             _memoryCacheService = memoryCacheService;
             _gameFlowManager = gameFlowManager;
             _gameBattleHandler = gameBattleHandler;
@@ -25,84 +35,142 @@ namespace GameService.Controllers
         [HttpGet("{userId}/summary")]
         public async Task<IActionResult> GetBattleSummary(string userId)
         {
-            try
-            {
-                string battleSummary = await _gameBattleHandler.GetBattleSummaryAsync(userId);
-                return Content(battleSummary, "text/plain");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+            using(var log = _logger.StartMethod(nameof(GetBattleSummary), HttpContext)){
+                try
+                {
+                    log.SetAttribute("userId", userId);
+                    string battleSummary = await _gameBattleHandler.GetBattleSummaryAsync(userId);
+                    return Content(battleSummary, "text/plain");
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
         }
 
         [HttpGet("{userId}/boss")]
         public async Task<IActionResult> GetBossCleared(string userId)
         {
-            try
-            {
-                bool bossCleared = await _gameBattleHandler.BossRoomClearedAsync(userId);
-                return Ok(bossCleared);
+            using(var log = _logger.StartMethod(nameof(GetBossCleared), HttpContext)){
+                try
+                {
+
+                    log.SetAttribute("userId", userId);
+                    bool bossCleared = await _gameBattleHandler.BossRoomClearedAsync(userId);
+                    return Ok(bossCleared);
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+
         }
 
         [HttpPost("{userId}/attack")]
         public async Task<IActionResult> PostAttackMonster(string userId, [FromQuery] bool skillUsed = false)
         {
-            try
-            {
-                string attackMessage = await _gameBattleHandler.AttackMonsterAsync(userId, skillUsed);
-                return Content(attackMessage, "text/plain");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+            using(var log = _logger.StartMethod(nameof(PostAttackMonster), HttpContext)){
+                try
+                {
+                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("skillUsed", skillUsed);
+                    string attackMessage = await _gameBattleHandler.AttackMonsterAsync(userId, skillUsed);
+                    return Content(attackMessage, "text/plain");
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
         }
 
         [HttpGet("{userId}/monster-attack")]
         public async Task<IActionResult> GetMonsterAttack(string userId)
         {
-            try
-            {
-                string monsterAttackMessage = await _gameBattleHandler.MonsterAttackAsync(userId);
-                return Content(monsterAttackMessage, "text/plain");
+            using(var log = _logger.StartMethod(nameof(GetMonsterAttack), HttpContext)){
+                try
+                {
+                    log.SetAttribute("userId", userId);
+                    string monsterAttackMessage = await _gameBattleHandler.MonsterAttackAsync(userId);
+                    return Content(monsterAttackMessage, "text/plain");
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
+
         }
 
         [HttpGet("{userId}/run")]
         public async Task<IActionResult> GetRunaway(string userId)
         {
-            try
-            {
-                var resultDto = await _gameBattleHandler.RunAwayAsync(userId);
-                return Ok(resultDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+            using(var log = _logger.StartMethod(nameof(GetRunaway), HttpContext)){
+                try
+                {
+                    log.SetAttribute("userId", userId);
+                    var resultDto = await _gameBattleHandler.RunAwayAsync(userId);
+                    return Ok(resultDto);
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
         }
 
         [HttpGet("{userId}/moster")]
         public async Task<IActionResult> GetMonsterExist(string userId)
         {
-            try
-            {
-                bool monsterExists = await _gameBattleHandler.MonsterExistsAsync(userId);
-                return Ok(monsterExists);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
+            using(var log = _logger.StartMethod(nameof(GetMonsterExist), HttpContext)){
+                try
+                {
+                    log.SetAttribute("userId", userId);
+                    bool monsterExists = await _gameBattleHandler.MonsterExistsAsync(userId);
+                    return Ok(monsterExists);
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
             }
         }
     }

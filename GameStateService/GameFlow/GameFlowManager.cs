@@ -16,7 +16,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         return playerData.ToString();
@@ -34,7 +34,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         return playerData.CurrentGameState;
@@ -45,7 +45,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         playerData.CurrentGameState = newState;
@@ -56,7 +56,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         var map = MapLoader.LoadNewMapAsync(mapName, mapLevel);
@@ -82,7 +82,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         await AssginNewMapToPlayerAsync(userId, "Tutorial", 1);
@@ -96,7 +96,7 @@ public class GameFlowManager
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         playerData.Health += health;

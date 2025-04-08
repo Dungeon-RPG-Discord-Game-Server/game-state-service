@@ -74,7 +74,7 @@ public class GameMoveHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
 
         int currentRoomId = playerData.CurrentMapData.CurrentRoom;
@@ -97,9 +97,6 @@ public class GameMoveHandler
 
         // 플레이어 데이터 업데이트
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
-
-        var check = await _memoryCacheService.GetPlayerDataAsync(userId);
-        Console.WriteLine($"[CHECK] Visited: {check.CurrentMapData.Rooms[targetRoomId.Value].Visited}");
         return targetRoomId.Value;
     }
 }

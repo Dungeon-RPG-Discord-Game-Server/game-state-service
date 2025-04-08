@@ -2,14 +2,33 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 using GameStateService.Services;
+
+using Telemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
+IConfiguration configuration = builder.Configuration;
+
+string serviceName = configuration["Logging:ServiceName"];
+string serviceVersion = configuration["Logging:ServiceVersion"];
+
 // 1. 서비스 구성 (DI 컨테이너에 서비스 등록)
 builder.Services.AddMemoryCache();
+builder.Services.AddOpenTelemetry().WithTracing(tcb =>
+{
+    tcb
+    .AddSource(serviceName)
+    .SetResourceBuilder(
+        ResourceBuilder.CreateDefault()
+            .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+    .AddAspNetCoreInstrumentation() // Automatically generate log lines for HTTP requests
+    .AddJsonConsoleExporter(); // Output log lines to the console
+});
 
-builder.Services.AddSingleton<APIRequestWrapper>();
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<MemoryCacheService>();
 builder.Services.AddSingleton<GameFlowManager>();

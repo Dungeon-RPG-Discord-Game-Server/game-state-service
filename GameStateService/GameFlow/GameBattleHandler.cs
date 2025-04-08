@@ -21,7 +21,7 @@ public class GameBattleHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
         var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
@@ -34,7 +34,7 @@ public class GameBattleHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         var bossRoom = playerData.CurrentMapData.Rooms[playerData.CurrentMapData.Rooms.Count - 1];
         var boss = bossRoom.Monster;
@@ -46,7 +46,7 @@ public class GameBattleHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
         var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
@@ -75,7 +75,7 @@ public class GameBattleHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
         var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
@@ -93,8 +93,6 @@ public class GameBattleHandler
         // For example, reduce monster's health by player's attack power
         if (skillUsed)
         {
-            if (playerData.Weapon.Skill == null)
-                throw new Exception("⚠️ This weapon has no skill!");
             // Assuming playerData.Weapon has a special skill
             playerData.Mana -= playerData.Weapon.Skill.ManaCost;
             monster.Health = Math.Max(monster.Health - playerData.Weapon.Skill.Damage, 0);
@@ -140,7 +138,7 @@ public class GameBattleHandler
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
         var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
@@ -179,7 +177,7 @@ public class GameBattleHandler
         var battleEscapeResult = new BattleEscapeResultDto();
         if (playerData == null)
         {
-            throw new Exception("Player data not found.");
+            throw new UserErrorException($"Player: {userId} data not found.");
         }
         int CurrentRoomId = playerData.CurrentMapData.CurrentRoom;
         var currentRoom = playerData.CurrentMapData.Rooms[CurrentRoomId];
