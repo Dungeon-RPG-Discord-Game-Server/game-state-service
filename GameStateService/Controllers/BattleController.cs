@@ -151,7 +151,7 @@ namespace GameService.Controllers
             }
         }
 
-        [HttpGet("{userId}/moster")]
+        [HttpGet("{userId}/monster")]
         public async Task<IActionResult> GetMonsterExist(string userId)
         {
             using(var log = _logger.StartMethod(nameof(GetMonsterExist), HttpContext)){
