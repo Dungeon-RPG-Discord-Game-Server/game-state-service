@@ -8,6 +8,7 @@ namespace GameStateService.Models
     /// </summary>
     public class PlayerData
     {
+        public string Id { get; set; }
         /// <summary>
         /// 플레이어의 고유 식별자 (예: Discord ID, 사용자 ID 등)
         /// </summary>
@@ -63,6 +64,7 @@ namespace GameStateService.Models
         {
             return new PlayerData
             {
+                Id = playerId,
                 PlayerId = playerId,
                 UserName = userName,
                 Level = 1,

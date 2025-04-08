@@ -13,12 +13,14 @@ namespace GameService.Controllers
     [Route("api/[controller]")]
     public class SaveLoadController : ControllerBase
     {
+        private readonly MemoryCacheService _memoryCacheService;
         private readonly CosmosDbWrapper _cosmosDbWrapper;
         private readonly IConfiguration _configuration;
         private readonly Logger _logger;
 
-        public SaveLoadController(IConfiguration configuration)
+        public SaveLoadController(IConfiguration configuration, MemoryCacheService memoryCacheService)
         {
+            _memoryCacheService = memoryCacheService;
             _configuration = configuration;
             if (null == _configuration)
             {
@@ -30,11 +32,64 @@ namespace GameService.Controllers
             _cosmosDbWrapper = new CosmosDbWrapper(configuration);
         }
 
-    }
+        [HttpPost("{userId}/save")]
+        public async Task<IActionResult> SaveGame(string userId)
+        {
+            using (var log = _logger.StartMethod(nameof(SaveGame), HttpContext))
+            {
+                try
+                {
+                    log.SetAttribute("request.userId", userId);
 
-    public class LoadResponse
-    {
-        public string UserId { get; set; }
-        public int SelectedOption { get; set; }
+                    var saveData = await _memoryCacheService.GetPlayerDataAsync(userId);
+                    if (await _cosmosDbWrapper.GetItemAsync<PlayerData>(saveData.PlayerId, saveData.PlayerId) != null)
+                    {
+                        await _cosmosDbWrapper.UpdateItemAsync(saveData.PlayerId, saveData.PlayerId, saveData);
+                    }
+                    else
+                    {
+                        await _cosmosDbWrapper.AddItemAsync(saveData, saveData.PlayerId);
+                    }
+                    return Ok(new { Message = "Game state saved successfully." });
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
+            }
+        }
+
+        [HttpGet("{userId}/load")]
+        public async Task<IActionResult> LoadGame(string userId)
+        {
+            using (var log = _logger.StartMethod(nameof(LoadGame), HttpContext))
+            {
+                try
+                {
+                    log.SetAttribute("request.userId", userId);
+
+                    var playerData = await _cosmosDbWrapper.GetItemAsync<PlayerData>(userId, userId);
+
+                    await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
+                    return Ok(new { Message = "Game state loaded successfully." });
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
+            }
+        }
     }
 }
