@@ -38,7 +38,7 @@ namespace GameService.Controllers
             using(var log = _logger.StartMethod(nameof(GetBattleSummary), HttpContext)){
                 try
                 {
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     string battleSummary = await _gameBattleHandler.GetBattleSummaryAsync(userId);
                     return Content(battleSummary, "text/plain");
                 }
@@ -62,7 +62,7 @@ namespace GameService.Controllers
                 try
                 {
 
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     bool bossCleared = await _gameBattleHandler.BossRoomClearedAsync(userId);
                     return Ok(bossCleared);
                 }
@@ -86,7 +86,7 @@ namespace GameService.Controllers
             using(var log = _logger.StartMethod(nameof(PostAttackMonster), HttpContext)){
                 try
                 {
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     log.SetAttribute("skillUsed", skillUsed);
                     string attackMessage = await _gameBattleHandler.AttackMonsterAsync(userId, skillUsed);
                     return Content(attackMessage, "text/plain");
@@ -110,7 +110,7 @@ namespace GameService.Controllers
             using(var log = _logger.StartMethod(nameof(GetMonsterAttack), HttpContext)){
                 try
                 {
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     string monsterAttackMessage = await _gameBattleHandler.MonsterAttackAsync(userId);
                     return Content(monsterAttackMessage, "text/plain");
                 }
@@ -134,7 +134,7 @@ namespace GameService.Controllers
             using(var log = _logger.StartMethod(nameof(GetRunaway), HttpContext)){
                 try
                 {
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     var resultDto = await _gameBattleHandler.RunAwayAsync(userId);
                     return Ok(resultDto);
                 }
@@ -157,7 +157,7 @@ namespace GameService.Controllers
             using(var log = _logger.StartMethod(nameof(GetMonsterExist), HttpContext)){
                 try
                 {
-                    log.SetAttribute("userId", userId);
+                    log.SetAttribute("request.userId", userId);
                     bool monsterExists = await _gameBattleHandler.MonsterExistsAsync(userId);
                     return Ok(monsterExists);
                 }
