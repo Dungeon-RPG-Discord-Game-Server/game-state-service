@@ -42,9 +42,10 @@ namespace GameService.Controllers
                     log.SetAttribute("request.userId", userId);
 
                     var saveData = await _memoryCacheService.GetPlayerDataAsync(userId);
+                    Console.WriteLine($"SaveData: {saveData}");
                     if (await _cosmosDbWrapper.GetItemAsync<PlayerData>(saveData.PlayerId, saveData.PlayerId) != null)
                     {
-                        await _cosmosDbWrapper.UpdateItemAsync(saveData.PlayerId, saveData.PlayerId, saveData);
+                        await _cosmosDbWrapper.UpdateItemAsync(saveData.id, saveData.PlayerId, saveData);
                     }
                     else
                     {

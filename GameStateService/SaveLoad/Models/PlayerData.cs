@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
 namespace GameStateService.Models
@@ -8,7 +9,7 @@ namespace GameStateService.Models
     /// </summary>
     public class PlayerData
     {
-        public string Id { get; set; }
+        public string id { get; set; }
         /// <summary>
         /// 플레이어의 고유 식별자 (예: Discord ID, 사용자 ID 등)
         /// </summary>
@@ -40,13 +41,14 @@ namespace GameStateService.Models
         /// </summary>
         public int Mana { get; set; }
         public int MaxMana { get; set; }
-
         public Weapon? Weapon {get; set;}
 
         /// <summary>
         /// 플레이어가 위치한 맵 파일명
         /// </summary>
         public MapData? CurrentMapData { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public GameStateType CurrentGameState { get; set; }
 
         /// <summary>
@@ -64,7 +66,7 @@ namespace GameStateService.Models
         {
             return new PlayerData
             {
-                Id = playerId,
+                id = playerId,
                 PlayerId = playerId,
                 UserName = userName,
                 Level = 1,

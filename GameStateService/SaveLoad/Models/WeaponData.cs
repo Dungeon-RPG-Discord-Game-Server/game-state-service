@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace GameStateService.Models
 {
     /// <summary>
@@ -20,6 +22,7 @@ namespace GameStateService.Models
         /// <summary>
         /// 해당 무기의 무기 타입 (예: Sword, Bow, Staff 등)
         /// </summary>
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public WeaponType Type { get; set; }
 
         public Skill Skill { get; set; }

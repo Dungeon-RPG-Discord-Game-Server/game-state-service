@@ -5,8 +5,10 @@ using Microsoft.Azure.Cosmos;
 
 using GameStateService.Utils;
 using GameStateService.Models;
+using GameStateService.Services;
 
 namespace GameStateService.Azure;
+using System.Text.Json;
 
 // A very simple wrapper to make it easier to call CosmosDb APIs
 public class CosmosDbWrapper
@@ -27,7 +29,7 @@ public class CosmosDbWrapper
         _logger = new Logger(serviceName);
         
         string cosmosEndpoint = configuration["cosmos-endpoint"];
-        string cosmosConnectionString = configuration["AzureFileServer:ConnectionStrings:CosmosConnectionString"];
+        string cosmosConnectionString = configuration["cosmos-connection-string"];
         if (string.IsNullOrEmpty(cosmosConnectionString))
         {
             _client = new CosmosClient(cosmosEndpoint, new DefaultAzureCredential());
@@ -57,6 +59,7 @@ public class CosmosDbWrapper
         {
             log.SetAttribute("item", item.ToString());
             log.SetAttribute("pk", pk);
+            Console.WriteLine(JsonSerializer.Serialize(item));
             await _container.CreateItemAsync(item, new PartitionKey(pk));
         }
     }

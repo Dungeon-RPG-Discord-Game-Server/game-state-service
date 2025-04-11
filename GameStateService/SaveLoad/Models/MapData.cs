@@ -26,13 +26,15 @@ namespace GameStateService.Models
     public class Room
     {
         public int Id { get; set; }
+        
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public RoomType RoomType { get; set; }
         public bool Visited { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public List<int> Neighbors { get; set; }
-        public Monster Monster { get; set; }
-        public Reward Reward { get; set; }
+        public Monster? Monster { get; set; }
+        public Reward? Reward { get; set; }
 
         /// <summary>
     }
@@ -41,7 +43,7 @@ namespace GameStateService.Models
     /// </summary>
     public class Monster
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         public int Level { get; set; }
         public int Health { get; set; }
         public int MaxHealth { get; set; }
@@ -53,8 +55,8 @@ namespace GameStateService.Models
     /// </summary>
     public class Reward
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Name { get; set; }
+        public string? Description { get; set; }
         public int Health { get; set; }
         public int Mana { get; set; }
         public int Experience { get; set; }
