@@ -42,16 +42,3 @@ jobs:
 
     - name: Push Docker image to ACR
       run: docker push dlee930cs397registry.azurecr.io/gamestateservice:latest
-
-    - name: Azure CLI Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Deploy to Azure Container App
-      run: |
-        az containerapp update \
-          --name rpg-game-state-service \
-          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-          --image dlee930cs397registry.azurecr.io/gamestateservice:latest \
-          --target-port 5000
