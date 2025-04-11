@@ -14,6 +14,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: 디렉토리 확인용
+      run: ls -R
+
     - name: Login to Azure Container Registry
       uses: azure/docker-login@v1
       with:
