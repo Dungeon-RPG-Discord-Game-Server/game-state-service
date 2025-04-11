@@ -38,8 +38,6 @@ jobs:
           az containerapp update \
             --name rpg-game-state-service \
             --resource-group CS397-Assignmnet \
-            --image dlee930cs397registry.azurecr.io/gamestateservice:latest \
-            --registry-server dlee930cs397registry.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }}
+            --image dlee930cs397registry.azurecr.io/gamestateservice:latest
+
 
