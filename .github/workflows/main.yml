@@ -1,4 +1,4 @@
-name: Deploy GameState Service to Azure
+name: Build and Push GameStateService to ACR
 
 on:
   push:
@@ -7,31 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.x'
-
-    - name: Restore dependencies
-      run: dotnet restore ./game-state-service/GameStateService/GameStateService.csproj
-
-    - name: Build the project
-      run: dotnet build ./game-state-service/GameStateService/GameStateService.csproj --configuration Release --no-restore
-
-    - name: Publish the project
-      run: dotnet publish ./game-state-service/GameStateService/GameStateService.csproj -c Release -o ./publish
-
-    - name: Build Docker image
-      run: |
-        docker build -t dlee930cs397registry.azurecr.io/gamestateservice:latest \
-          -f ./game-state-service/GameStateService/Dockerfile ./game-state-service
 
     - name: Login to Azure Container Registry
       uses: azure/docker-login@v1
@@ -39,6 +20,12 @@ jobs:
         login-server: dlee930cs397registry.azurecr.io
         username: ${{ secrets.ACR_USERNAME }}
         password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t dlee930cs397registry.azurecr.io/gamestateservice:latest \
+          -f ./game-state-service/GameStateService/Dockerfile \
+          ./game-state-service
 
     - name: Push Docker image to ACR
       run: docker push dlee930cs397registry.azurecr.io/gamestateservice:latest
