@@ -21,7 +21,7 @@ public class ManagerApiKeyMiddleware
             if (!context.Request.Headers.TryGetValue("X-MANAGER-KEY", out var key) || key != _adminKey)
             {
                 context.Response.StatusCode = 403;
-                await context.Response.WriteAsync("❌ Unauthorized to access API Key Generator.");
+                await context.Response.WriteAsync("Unauthorized to access API Key Generator.");
                 return;
             }
         }
