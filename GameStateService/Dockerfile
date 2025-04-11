@@ -8,8 +8,8 @@ USER app
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG configuration=Release
 WORKDIR /src
-COPY ["GameStateService/GameStateService.csproj", "GameStateService/"]
-RUN dotnet restore "GameStateService/GameStateService.csproj"
+COPY ["GameStateService.csproj", "."]
+RUN dotnet restore "GameStateService.csproj"
 COPY . .
 WORKDIR "/src/GameStateService"
 RUN dotnet build "GameStateService.csproj" -c $configuration -o /app/build
