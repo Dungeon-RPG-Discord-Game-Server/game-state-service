@@ -1,13 +1,7 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
 
 using GameStateService.Services;
 

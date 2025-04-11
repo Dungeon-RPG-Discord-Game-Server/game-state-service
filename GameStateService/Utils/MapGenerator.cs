@@ -99,7 +99,7 @@ namespace GameStateService.Utils
             // 몬스터, 보상 배치
             foreach (var room in roomList)
             {
-                if (_random.NextDouble() < 0.3)
+                if (_random.NextDouble() < 0.3 && room.Id != 0)
                 {
                     room.Monster = new Monster
                     {
