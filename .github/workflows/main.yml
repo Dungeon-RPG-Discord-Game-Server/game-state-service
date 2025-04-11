@@ -1,0 +1,32 @@
+name: Build and Push GameStateService to ACR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: dlee930cs397registry.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t dlee930cs397registry.azurecr.io/gamestateservice:latest \
+          -f ./GameStateService/Dockerfile \
+          ./GameStateService
+
+
+    - name: Push Docker image to ACR
+      run: docker push dlee930cs397registry.azurecr.io/gamestateservice:latest
