@@ -29,15 +29,3 @@ jobs:
 
     - name: Push Docker image to ACR
       run: docker push dlee930cs397registry.azurecr.io/gamestateservice:latest
-
-    - name: Deploy to Azure Container App
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.51.0
-        inlineScript: |
-          az containerapp update \
-            --name rpg-game-state-service \
-            --resource-group CS397-Assignmnet \
-            --image dlee930cs397registry.azurecr.io/gamestateservice:latest
-
-
