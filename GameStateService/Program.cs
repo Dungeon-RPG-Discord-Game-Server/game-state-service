@@ -1,15 +1,25 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 using GameStateService.Services;
 
 using Telemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultUri = new Uri("https://vbn930-rpg-kv.vault.azure.net/");
+
+builder.Configuration.AddAzureKeyVault(
+    keyVaultUri,
+    new DefaultAzureCredential());
 
 IConfiguration configuration = builder.Configuration;
 
@@ -43,6 +53,9 @@ builder.Services.AddSwaggerGen();   // Swagger 설정 (선택)
 // builder.Services.AddSingleton<IMyService, MyService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ManagerApiKeyMiddleware>();
+app.UseMiddleware<ApiKeyMiddleware>(); // API Key 미들웨어 사용
 
 // 2. HTTP 요청 파이프라인 구성
 if (app.Environment.IsDevelopment())

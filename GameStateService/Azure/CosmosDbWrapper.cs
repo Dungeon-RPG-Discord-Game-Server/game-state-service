@@ -26,7 +26,7 @@ public class CosmosDbWrapper
         string serviceName = configuration["Logging:ServiceName"];
         _logger = new Logger(serviceName);
         
-        string cosmosEndpoint = configuration["AzureFileServer:ConnectionStrings:CosmosEndpoint"];
+        string cosmosEndpoint = configuration["cosmos-endpoint"];
         string cosmosConnectionString = configuration["AzureFileServer:ConnectionStrings:CosmosConnectionString"];
         if (string.IsNullOrEmpty(cosmosConnectionString))
         {

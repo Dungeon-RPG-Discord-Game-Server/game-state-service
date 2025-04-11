@@ -15,7 +15,7 @@ namespace GameService.Controllers
             _memoryCacheService = memoryCacheService;
         }
 
-        [HttpGet("admin/players")]
+        [HttpGet("apikey/generate")]
         public async Task<IActionResult> GetPlayers()
         {
             // bool isOnline = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
