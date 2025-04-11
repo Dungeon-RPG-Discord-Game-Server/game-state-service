@@ -189,7 +189,7 @@ public class GameBattleHandler
             return battleEscapeResult;
         }
 
-        bool escaped = new Random().Next(0, 2) == 1; // 50% chance to escape
+        bool escaped = RandomProvider.FiftyFiftyChance(); // 50% chance to escape
         if (currentRoom.RoomType == RoomType.Boss)
         {
             battleEscapeResult.IsEscaped = false;
