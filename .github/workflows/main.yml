@@ -24,8 +24,7 @@ jobs:
     - name: Build Docker image
       run: |
         docker build -t dlee930cs397registry.azurecr.io/gamestateservice:latest \
-          -f ./GameStateService/Dockerfile \
-          ./GameStateService
+          -f GameStateService/Dockerfile .
 
 
     - name: Push Docker image to ACR
