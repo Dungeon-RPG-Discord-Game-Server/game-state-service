@@ -22,12 +22,12 @@ public class GameMoveHandler
             .Where(r => r != null)
             .ToList();
 
-        // right
-        if (neighbors.Any(r => r.X - currentRoom.X == 1 && r.Y == currentRoom.Y))
-            directions.Add("right");
         // left
         if (neighbors.Any(r => r.X - currentRoom.X == -1 && r.Y == currentRoom.Y))
             directions.Add("left");
+        // right
+        if (neighbors.Any(r => r.X - currentRoom.X == 1 && r.Y == currentRoom.Y))
+            directions.Add("right");
         // up
         if (neighbors.Any(r => r.Y - currentRoom.Y == 1 && r.X == currentRoom.X))
             directions.Add("up");
