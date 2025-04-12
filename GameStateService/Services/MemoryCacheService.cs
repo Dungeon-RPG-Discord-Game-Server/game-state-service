@@ -33,7 +33,7 @@ namespace GameStateService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"❌ [RegisterPlayerDataAsync] Failed to register data for player {playerId}: {ex.Message}");
+                throw new Exception($"[RegisterPlayerDataAsync] Failed to register data for player {playerId}: {ex.Message}");
             }
         }
 
@@ -52,7 +52,7 @@ namespace GameStateService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"❌ [UpdatePlayerDataAsync] Failed to update data for player {playerId}: {ex.Message}");
+                throw new Exception($"[UpdatePlayerDataAsync] Failed to update data for player {playerId}: {ex.Message}");
             }
         }
 
@@ -65,7 +65,7 @@ namespace GameStateService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"❌ [IsPlayerDataExistAsync] Failed to check existence of data for player {playerId}: {ex.Message}");
+                throw new Exception($"[IsPlayerDataExistAsync] Failed to check existence of data for player {playerId}: {ex.Message}");
             }
         }
 
@@ -76,14 +76,14 @@ namespace GameStateService.Services
                 bool isKeyExist = _memoryCache.TryGetValue(playerId, out string data);
                 if (!isKeyExist || string.IsNullOrWhiteSpace(data))
                 {
-                    throw new Exception($"⚠️ [GetPlayerDataAsync] No data found for player {playerId}");
+                    throw new Exception($"[GetPlayerDataAsync] No data found for player {playerId}");
                 }
 
                 return JsonSerializerWrapper.Deserialize<PlayerData>(data);
             }
             catch (Exception ex)
             {
-                throw new Exception($"❌ [GetPlayerDataAsync] Failed to retrieve data for player {playerId}: {ex.Message}");
+                throw new Exception($"[GetPlayerDataAsync] Failed to retrieve data for player {playerId}: {ex.Message}");
             }
         }
 
@@ -95,7 +95,7 @@ namespace GameStateService.Services
             }
             catch (Exception ex)
             {
-                throw new Exception($"❌ [RemovePlayerDataAsync] Failed to remove data for player {playerId}: {ex.Message}");
+                throw new Exception($"[RemovePlayerDataAsync] Failed to remove data for player {playerId}: {ex.Message}");
             }
         }
     }

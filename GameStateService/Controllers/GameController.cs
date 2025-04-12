@@ -71,7 +71,7 @@ namespace GameService.Controllers
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     string weaponInfo = data.Weapon != null
@@ -114,7 +114,7 @@ namespace GameService.Controllers
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     string mapData = await _gameFlowManager.GetMapStringAsync(data.CurrentMapData);
@@ -145,7 +145,7 @@ namespace GameService.Controllers
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     await _gameFlowManager.EnterNewDungeonAsync(userId);
@@ -178,7 +178,7 @@ namespace GameService.Controllers
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     var mapData = data.CurrentMapData;
@@ -212,18 +212,18 @@ namespace GameService.Controllers
                     var data = await _memoryCacheService.GetPlayerDataAsync(userId);
 
                     if (data.CurrentGameState != GameStateType.ExplorationState){
-                        return BadRequest(new { Message = "❌ You are not in the exploration state." });
+                        return BadRequest(new { Message = "You are not in the exploration state." });
                     }
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     int? nextRoomId = await _gameMoveHandler.MovePlayerAsync(userId, request.Direction);
                     if (nextRoomId == null)
                     {
-                        return BadRequest(new { Message = "❌ Invalid move direction." });
+                        return BadRequest(new { Message = "Invalid move direction." });
                     }
 
                     data = await _memoryCacheService.GetPlayerDataAsync(userId);
@@ -233,10 +233,10 @@ namespace GameService.Controllers
                     {
                         data.CurrentGameState = GameStateType.BattleState;
                         await _memoryCacheService.UpdatePlayerDataAsync(userId, data, TimeSpan.FromMinutes(30));
-                        return Ok(new { Message = "⚔️ You have encountered a monster! Prepare for battle!" });
+                        return Ok(new { Message = "You have encountered a monster! Prepare for battle!" });
                     }
 
-                    return Ok(new { Message = $"✅ You moved to room {nextRoomId}." });
+                    return Ok(new { Message = $"You moved to room {nextRoomId}." });
                 }
                 catch (UserErrorException e)
                 {
@@ -263,7 +263,7 @@ namespace GameService.Controllers
 
                     if (data == null)
                     {
-                        return NotFound(new { Message = "❌ User not found." });
+                        return NotFound(new { Message = "User not found." });
                     }
 
                     var gameState = await _gameFlowManager.GetCurrentGameStateAsync(userId);
