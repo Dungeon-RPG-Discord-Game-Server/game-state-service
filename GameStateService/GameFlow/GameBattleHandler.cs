@@ -55,14 +55,12 @@ public class GameBattleHandler
             return "No monster in the current room.";
         }
         string battleMessage = $@"
-        ⚔️ **Battle Status**
-
         **👤 You**
-        - HP: ❤️ {playerData.Health} / {playerData.MaxHealth}
-        - MP: 🔵 {playerData.Mana} / {playerData.MaxMana}
+        ❤️HP: {playerData.Health} / {playerData.MaxHealth}
+        🔵MP: {playerData.Mana} / {playerData.MaxMana}
 
         **🐉 {monster.Name}**
-        - HP: ❤️ {monster.Health} / {monster.MaxHealth}
+        ❤️HP: {monster.Health} / {monster.MaxHealth}
         ".Trim();
 
         // Assuming playerData has a method to get battle summary
@@ -111,9 +109,9 @@ public class GameBattleHandler
             💥 You defeated the 🐉 {monster.Name}!
 
             🎉 You gained:
-            - ❤️ +{reward.Health} HP
-            - 🔵 +{reward.Mana} MP
-            - 🌟 +{reward.Experience} EXP
+            ❤️ +{reward.Health} HP
+            🔵 +{reward.Mana} MP
+            🌟 +{reward.Experience} EXP
             ".Trim();
 
             playerData.Health += reward.Health;

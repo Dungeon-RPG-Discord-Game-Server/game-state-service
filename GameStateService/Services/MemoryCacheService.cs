@@ -17,7 +17,7 @@ namespace GameStateService.Services
             _memoryCache = memoryCache;
         }
 
-        public async Task RegisterPlayerDataAsync(string playerId, WeaponType weaponType, TimeSpan? expiration = null)
+        public async Task RegisterPlayerDataAsync(string playerId, string userName, WeaponType weaponType, TimeSpan? expiration = null)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace GameStateService.Services
                     options.SetAbsoluteExpiration(expiration.Value);
                 }
 
-                PlayerData data = PlayerFactory.CreateNewPlayer(playerId, playerId, weaponType);
+                PlayerData data = PlayerFactory.CreateNewPlayer(playerId, userName, weaponType);
                 string strData = JsonSerializerWrapper.Serialize(data);
                 _memoryCache.Set(playerId, strData, options);
             }

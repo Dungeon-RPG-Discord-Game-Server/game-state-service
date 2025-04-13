@@ -64,14 +64,14 @@ public class GameFlowManager
         playerData.CurrentMapData = map;
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
     }
-    public async Task<PlayerData> StartNewGameAsync(string userId, int weaponType)
+    public async Task<PlayerData> StartNewGameAsync(string userId, string userName, int weaponType)
     {
         bool alreadyRegistered = await _memoryCacheService.IsPlayerDataExistAsync(userId);
         if (alreadyRegistered)
         {
             await _memoryCacheService.RemovePlayerDataAsync(userId);
         }
-        await _memoryCacheService.RegisterPlayerDataAsync(userId, (WeaponType)weaponType,TimeSpan.FromMinutes(30));
+        await _memoryCacheService.RegisterPlayerDataAsync(userId, userName, (WeaponType)weaponType,TimeSpan.FromMinutes(30));
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
 
         return playerData;

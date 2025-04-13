@@ -83,10 +83,12 @@ namespace GameService.Controllers
                             : "🌐 No map assigned";
                     string playerSummary =
                             $@"👤 **{data.UserName}**
-                            🏅 Level: {data.Level}    ✨ EXP: {data.Experience}
-                            ❤️ Health: {data.Health} / {data.MaxHealth}   🔵 Mana: {data.Mana} / {data.MaxMana}
+                            🏅 Level: {data.Level}
+                            ✨ EXP: {data.Experience}
+                            ❤️ Health: {data.Health} / {data.MaxHealth}
+                            🔵 Mana: {data.Mana} / {data.MaxMana}
                             {weaponInfo}
-                            {mapInfo}";
+                            {mapInfo}".Trim();
 
                     return Content(playerSummary, "text/plain");
                 }
@@ -293,7 +295,7 @@ namespace GameService.Controllers
                     log.SetAttribute("request.name", request.Name);
                     log.SetAttribute("request.weaponType", request.WeaponType);
 
-                    await _gameFlowManager.StartNewGameAsync(request.UserId, request.WeaponType);
+                    await _gameFlowManager.StartNewGameAsync(request.UserId, request.Name, request.WeaponType);
 
                     return Ok(new RegisterPlayerResponseDto
                     {
@@ -330,6 +332,29 @@ namespace GameService.Controllers
                         Online = isOnline
                     };
                     return Ok(result);
+                }
+                catch (UserErrorException e)
+                {
+                    log.LogUserError(e.Message);
+                    return BadRequest(new { Message = e.Message });
+                }
+                catch(Exception e)
+                {
+                    log.HandleException(e);
+                    return BadRequest(new { Message = e.Message });
+                }
+            }
+        }
+
+        [HttpPost("{userId}/quit")]
+        public async Task<IActionResult> PostQuitGame(string userId)
+        {
+            using(var log = _logger.StartMethod(nameof(PostQuitGame), HttpContext)){
+                try
+                {
+                    log.SetAttribute("request.userId", userId);
+                    await _memoryCacheService.RemovePlayerDataAsync(userId);
+                    return Ok(new { Message = "You have successfully quit the game." });
                 }
                 catch (UserErrorException e)
                 {
