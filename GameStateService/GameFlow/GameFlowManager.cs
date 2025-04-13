@@ -51,7 +51,7 @@ public class GameFlowManager
         playerData.CurrentGameState = newState;
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
     }
-    public async Task AssginNewMapToPlayerAsync(string userId, string mapName, int mapLevel)
+    public async Task AssginNewMapToPlayerAsync(string userId, int mapLevel)
     {
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
         if (playerData == null)
@@ -59,7 +59,7 @@ public class GameFlowManager
             throw new UserErrorException($"Player: {userId} data not found.");
         }
 
-        var map = MapLoader.LoadNewMapAsync(mapName, mapLevel);
+        var map = MapLoader.LoadNewMapAsync(mapLevel, playerData.Level);
 
         playerData.CurrentMapData = map;
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
@@ -80,12 +80,16 @@ public class GameFlowManager
     public async Task<PlayerData> EnterNewDungeonAsync(string userId)
     {
         var playerData = await _memoryCacheService.GetPlayerDataAsync(userId);
+        int mapLevel = 1;
         if (playerData == null)
         {
             throw new UserErrorException($"Player: {userId} data not found.");
         }
 
-        await AssginNewMapToPlayerAsync(userId, "Tutorial", 1);
+        if (playerData.CurrentMapData != null){
+            mapLevel = playerData.CurrentMapData.MapLevel + 1;
+        }
+        await AssginNewMapToPlayerAsync(userId, mapLevel);
         await ChangeGameStateAsync(userId, GameStateType.ExplorationState);
 
         return playerData;

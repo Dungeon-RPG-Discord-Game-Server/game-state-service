@@ -11,6 +11,7 @@ namespace GameStateService.Models
         public string MapName { get; set; }
         public int CurrentRoom { get; set; }
         public List<Room> Rooms { get; set; }
+        public int MapLevel { get; set; }
     }
 
     public enum RoomType
@@ -42,10 +43,6 @@ namespace GameStateService.Models
         public int MaxHealth { get; set; }
         public int Attack { get; set; }
     }
-
-    /// <summary>
-    /// 보상 정보를 나타내는 클래스입니다.
-    /// </summary>
     public class Reward
     {
         public string? Name { get; set; }

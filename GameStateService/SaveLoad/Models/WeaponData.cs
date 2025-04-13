@@ -13,6 +13,14 @@ namespace GameStateService.Models
         public WeaponType Type { get; set; }
 
         public Skill Skill { get; set; }
+
+        public void UpgradeWeapon(int upgradePower, int upgradeManaCost)
+        {
+
+            AttackPower += upgradePower;
+            ManaCost += upgradeManaCost;
+            Skill = WeaponFactory.CreateSkill(ManaCost, AttackPower * 2);
+        }
     }
 
     public class Skill
@@ -66,7 +74,7 @@ namespace GameStateService.Models
 
             weapon.AttackPower += upgradePower;
             weapon.ManaCost += upgradeManaCost;
-            weapon.Skill = CreateSkill(weapon.ManaCost * 2, weapon.AttackPower * 2);
+            weapon.Skill = CreateSkill(weapon.ManaCost, weapon.AttackPower * 2);
 
             return $"{weapon.Name} has been upgraded! New Attack Power: {weapon.AttackPower} and Mana Cost: {weapon.ManaCost}.";
         }

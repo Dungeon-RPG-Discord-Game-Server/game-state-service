@@ -93,20 +93,23 @@ public class GameBattleHandler
             // Assuming playerData.Weapon has a special skill
             playerData.Mana -= playerData.Weapon.Skill.ManaCost;
             monster.Health = Math.Max(monster.Health - playerData.Weapon.Skill.Damage, 0);
-            attackMessage = $"✨ You unleashed a powerful skill on 🐉 {monster.Name} and dealt **{playerData.Weapon.Skill.Damage}** damage!";
+            attackMessage = $"✨ You unleashed a powerful skill on 🐉 **{monster.Name}** and dealt **{playerData.Weapon.Skill.Damage}** damage!";
         }
         else
         {
             // Normal attack
             playerData.Mana -= playerData.Weapon.ManaCost;
             monster.Health = Math.Max(monster.Health - playerData.Weapon.AttackPower, 0);
-            attackMessage = $"🗡️ You attacked the 🐉 {monster.Name} and dealt **{playerData.Weapon.AttackPower}** damage!";
+            attackMessage = $"🗡️ You attacked the 🐉 **{monster.Name}** and dealt **{playerData.Weapon.AttackPower}** damage!";
         }
 
         if (monster.Health <= 0)
         {
+            int playerLevel = playerData.Level;
+            playerData.ApplyReward(reward);
+
             string message = $@"
-            💥 You defeated the 🐉 {monster.Name}!
+            💥 You defeated the 🐉 **{monster.Name}**!
 
             🎉 You gained:
             ❤️ +{reward.Health} HP
@@ -114,9 +117,14 @@ public class GameBattleHandler
             🌟 +{reward.Experience} EXP
             ".Trim();
 
-            playerData.Health += reward.Health;
-            playerData.Mana += reward.Mana;
-            playerData.Experience += reward.Experience;
+            string levelUpMessage = $@"
+            🎉 **Congratulations, {playerData.UserName}!**
+            You've leveled up from **Lv. {playerLevel}** to **Lv. {playerData.Level}**!";
+
+            if (playerData.Level > playerLevel)
+            {
+                message += levelUpMessage;
+            }
 
             currentRoom.Monster = null; // Monster defeated
             currentRoom.Reward = null; // Clear reward after collection
@@ -152,7 +160,7 @@ public class GameBattleHandler
         if (playerData.Health <= 0)
         {
             string message = $@"
-            💢 The 🐉 {monster.Name} attacked you and dealt **{monster.Attack}** damage!
+            💢 The 🐉 **{monster.Name}** attacked you and dealt **{monster.Attack}** damage!
             ☠️ **You have been defeated...**
 
             Your HP has dropped to 0.  
@@ -165,7 +173,7 @@ public class GameBattleHandler
 
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
 
-        return $"💢 The 🐉 {monster.Name} attacked you and dealt **{monster.Attack}** damage!";
+        return $"💢 The 🐉 **{monster.Name}** attacked you and dealt **{monster.Attack}** damage!";
     }
 
     public async Task<BattleEscapeResultDto> RunAwayAsync(string userId)
@@ -197,7 +205,7 @@ public class GameBattleHandler
         if (escaped)
         {
             string message = $@"
-            🏃 You successfully ran away from the 🐉 {monster.Name}!
+            🏃 You successfully ran away from the 🐉 **{monster.Name}**!
             ".Trim();
             await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.ExplorationState);
             battleEscapeResult.IsEscaped = true;
@@ -206,7 +214,7 @@ public class GameBattleHandler
         }
 
         battleEscapeResult.IsEscaped = false;
-        battleEscapeResult.Message =  $"💢 You couldn't escape! The 🐉 {monster.Name} is still chasing you!";
+        battleEscapeResult.Message =  $"💢 You couldn't escape! The 🐉 **{monster.Name}** is still chasing you!";
         return battleEscapeResult;
     }
 }

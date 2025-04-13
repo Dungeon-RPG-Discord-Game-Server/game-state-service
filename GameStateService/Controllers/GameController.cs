@@ -75,11 +75,11 @@ namespace GameService.Controllers
                     }
 
                     string weaponInfo = data.Weapon != null
-                            ? $"🗡️ Weapon: {data.Weapon.Name} (ATK: {data.Weapon.AttackPower}, Mana Cost: {data.Weapon.ManaCost})"
+                            ? $"🗡️ Weapon: **{data.Weapon.Name} (ATK: {data.Weapon.AttackPower}, Mana Cost: {data.Weapon.ManaCost})**"
                             : "❌ No weapon equipped";
 
                     string mapInfo = data.CurrentMapData != null
-                            ? $"🗺️ Current Map: {data.CurrentMapData.MapName}"
+                            ? $"🗺️ Current Map: **{data.CurrentMapData.MapName}**"
                             : "🌐 No map assigned";
                     string playerSummary =
                             $@"👤 **{data.UserName}**
@@ -154,7 +154,7 @@ namespace GameService.Controllers
 
                     var updated = await _memoryCacheService.GetPlayerDataAsync(userId);
 
-                    return Content($"✅ You have entered the map: {updated.CurrentMapData.MapName}.", "text/plain");
+                    return Content($"✅ You have entered the dungeon: **{updated.CurrentMapData.MapName}**.", "text/plain");
                 }
                 catch (UserErrorException e)
                 {

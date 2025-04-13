@@ -7,10 +7,96 @@ using GameStateService.Models;
 
 namespace GameStateService.Utils
 {
+    public static class MonsterGenerator
+    {
+        private static readonly string[] BossTypes = new[]
+        {
+            "Boss", "Abyssal", "Legendary", "Champion", "Elite", "Boss", "Ancient", "Mythic", "Titan", "Overlord"
+        };
+        private static readonly string[] Adjectives = new[]
+        {
+            "Feral", "Dark", "Vicious", "Rotten", "Shadow", "Burning", "Wicked", "Savage", "Corrupted", "Venomous"
+        };
+
+        private static readonly string[] Nouns = new[]
+        {
+            "Wolf", "Goblin", "Wraith", "Slime", "Spider", "Golem", "Bat", "Reaper", "Troll", "Serpent"
+        };
+
+        public static Monster Generate(int playerLevel, int mapLevel, bool isBoss = false)
+        {
+            string name = isBoss
+                ? $"{BossTypes[RandomProvider.Next(BossTypes.Length)]} {Adjectives[RandomProvider.Next(Adjectives.Length)]} {Nouns[RandomProvider.Next(Nouns.Length)]}"
+                : $"{Adjectives[RandomProvider.Next(Adjectives.Length)]} {Nouns[RandomProvider.Next(Nouns.Length)]}";
+
+            int level = isBoss
+                ? Math.Max(playerLevel, mapLevel) + 2
+                : Math.Max(playerLevel, mapLevel);
+
+            int health = isBoss
+                ? RandomProvider.Next(100, 150) + level * 10
+                : RandomProvider.Next(20, 40) + level * 5;
+
+            int attack = isBoss
+                ? RandomProvider.Next(15, 25) + level * 2
+                : RandomProvider.Next(5, 10) + level;
+
+            return new Monster
+            {
+                Name = name,
+                Level = level,
+                MaxHealth = health,
+                Health = health,
+                Attack = attack
+            };
+        }
+    }
+
+    public static class RewardGenerator
+    {
+        private static readonly string[] RewardNames = new[]
+        {
+            "Elixir of Power", "Mystic Tome", "Ancient Relic", "Crystal Heart", "Phoenix Feather"
+        };
+
+        private static readonly string[] RewardDescriptions = new[]
+        {
+            "Greatly boosts your stats temporarily.",
+            "A tome filled with forgotten knowledge.",
+            "Glows with ancient magical energy.",
+            "Revives the spirit within.",
+            "Burns with eternal life energy."
+        };
+
+        public static Reward Generate(Monster monster, bool isBoss = false)
+        {
+            int healthRestore = isBoss ? RandomProvider.Next(25, 50) : RandomProvider.Next(5, 11);
+            int manaRestore = isBoss ? RandomProvider.Next(20, 40) : RandomProvider.Next(3, 8);
+            int expGained = isBoss
+                ? monster.Level * RandomProvider.Next(30, 50)
+                : monster.Level * RandomProvider.Next(8, 15);
+
+            string name = isBoss
+                ? RewardNames[RandomProvider.Next(RewardNames.Length)]
+                : "Small Potion";
+
+            string desc = isBoss
+                ? RewardDescriptions[RandomProvider.Next(RewardDescriptions.Length)]
+                : "Restores a bit of HP and MP.";
+
+            return new Reward
+            {
+                Name = name,
+                Description = desc,
+                Health = healthRestore,
+                Mana = manaRestore,
+                Experience = expGained
+            };
+        }
+    }
+
     public static class MapGenerator
     {
-        private static readonly Random _random = new();
-
         private static readonly List<(int dx, int dy)> directions = new()
         {
             (0, 1),
@@ -19,7 +105,24 @@ namespace GameStateService.Utils
             (-1, 0)
         };
 
-        public static MapData GenerateMap(string mapName, int roomCount)
+        private static readonly string[] Adjectives = new[]
+        {
+            "Forgotten", "Ancient", "Cursed", "Haunted", "Shadowy", "Burning", "Frozen", "Echoing", "Twisted", "Abyssal"
+        };
+
+        private static readonly string[] Nouns = new[]
+        {
+            "Catacombs", "Sanctum", "Keep", "Crypt", "Ruins", "Depths", "Abyss", "Vault", "Labyrinth", "Stronghold"
+        };
+
+        public static string GenerateMapName(int mapLevel)
+        {
+            var adjective = Adjectives[RandomProvider.Next(0, Adjectives.Length)];
+            var noun = Nouns[RandomProvider.Next(0, Nouns.Length)];
+            return $"{adjective} {noun} (level {mapLevel})";
+        }
+
+        public static MapData GenerateMap(int roomCount, int mapLevel = 1, int playerLevel = 1)
         {
             var map = new Dictionary<(int, int), Room>();
             var roomList = new List<Room>();
@@ -43,7 +146,7 @@ namespace GameStateService.Utils
             while (roomList.Count < roomCount && frontier.Count > 0)
             {
                 var current = frontier.Dequeue();
-                var shuffled = directions.OrderBy(_ => _random.Next()).ToList();
+                var shuffled = directions.OrderBy(_ => RandomProvider.Next()).ToList();
 
                 foreach (var (dx, dy) in shuffled)
                 {
@@ -96,63 +199,37 @@ namespace GameStateService.Utils
 
             foreach (var room in roomList)
             {
-                if (_random.NextDouble() < 0.3 && room.Id != 0)
+                if (RandomProvider.NextDouble() < 0.3 && room.Id != 0)
                 {
-                    room.Monster = new Monster
-                    {
-                        Name = "Slime",
-                        Level = 1,
-                        Health = 10,
-                        MaxHealth = 20,
-                        Attack = 5
-                    };
-                    room.Reward = new Reward
-                    {
-                        Name = "Small Potion",
-                        Description = "Restores a bit of HP and MP.",
-                        Health = 10,
-                        Mana = 5,
-                        Experience = 10
-                    };
+                    room.Monster = MonsterGenerator.Generate(playerLevel, mapLevel);
+                    room.Reward = RewardGenerator.Generate(room.Monster);
                 }
-                else if (_random.NextDouble() < 0.2)
+                else if (RandomProvider.NextDouble() < 0.2)
                 {
-                    room.Reward = new Reward
-                    {
-                        Name = "Small Potion",
-                        Description = "Restores a bit of HP and MP.",
-                        Health = 10,
-                        Mana = 5,
-                        Experience = 10
-                    };
+                    // room.Reward = new Reward
+                    // {
+                    //     Name = "Small Potion",
+                    //     Description = "Restores a bit of HP and MP.",
+                    //     Health = 10,
+                    //     Mana = 5,
+                    //     Experience = 10
+                    // };
+                    continue;
                 }
             }
 
             // 마지막 방은 보스룸으로
             var lastRoom = roomList.Last();
             lastRoom.RoomType = RoomType.Boss;
-            lastRoom.Monster = new Monster
-            {
-                Name = "Boss Goblin",
-                Level = 5,
-                Health = 10,
-                MaxHealth = 100,
-                Attack = 20
-            };
-            lastRoom.Reward = new Reward
-                    {
-                        Name = "Small Potion",
-                        Description = "Restores a bit of HP and MP.",
-                        Health = 10,
-                        Mana = 5,
-                        Experience = 10
-                    };
+            lastRoom.Monster = MonsterGenerator.Generate(playerLevel, mapLevel, true);
+            lastRoom.Reward = RewardGenerator.Generate(lastRoom.Monster, true);
 
             return new MapData
             {
-                MapName = mapName,
+                MapName = GenerateMapName(mapLevel),
                 CurrentRoom = 0,
-                Rooms = roomList
+                Rooms = roomList,
+                MapLevel = mapLevel
             };
         }
 
