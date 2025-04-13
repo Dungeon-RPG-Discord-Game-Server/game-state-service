@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace GameStateService.Models
@@ -35,12 +33,7 @@ namespace GameStateService.Models
         public List<int> Neighbors { get; set; }
         public Monster? Monster { get; set; }
         public Reward? Reward { get; set; }
-
-        /// <summary>
     }
-
-    /// 몬스터 정보를 나타내는 클래스입니다.
-    /// </summary>
     public class Monster
     {
         public string? Name { get; set; }

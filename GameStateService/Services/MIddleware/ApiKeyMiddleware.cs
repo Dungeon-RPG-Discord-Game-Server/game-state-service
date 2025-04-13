@@ -57,7 +57,6 @@ public class ApiKeyMiddleware
         var value = secret.Value.Value;
         var metadata = JsonSerializer.Deserialize<ApiKeyMetadata>(secret.Value.Value);
 
-        // 캐시에 저장 (예: 10분 유효)
         _cache.Set(keyName, metadata.Key, TimeSpan.FromMinutes(10));
         return metadata.Key;
     }

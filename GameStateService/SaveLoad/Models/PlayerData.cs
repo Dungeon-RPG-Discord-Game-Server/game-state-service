@@ -4,48 +4,18 @@ using System.Collections.Generic;
 
 namespace GameStateService.Models
 {
-    /// <summary>
-    /// 플레이어의 기본 데이터를 나타내는 모델 클래스입니다.
-    /// </summary>
     public class PlayerData
     {
         public string id { get; set; }
-        /// <summary>
-        /// 플레이어의 고유 식별자 (예: Discord ID, 사용자 ID 등)
-        /// </summary>
         public string PlayerId { get; set; }
-
-        /// <summary>
-        /// 플레이어의 이름
-        /// </summary>
         public string UserName { get; set; }
-
-        /// <summary>
-        /// 플레이어의 현재 레벨
-        /// </summary>
         public int Level { get; set; }
-
-        /// <summary>
-        /// 플레이어의 경험치
-        /// </summary>
         public int Experience { get; set; }
-
-        /// <summary>
-        /// 플레이어의 현재 체력
-        /// </summary>
         public int Health { get; set; }
         public int MaxHealth { get; set; }
-
-        /// <summary>
-        /// 플레이어의 현재 마나
-        /// </summary>
         public int Mana { get; set; }
         public int MaxMana { get; set; }
         public Weapon? Weapon {get; set;}
-
-        /// <summary>
-        /// 플레이어가 위치한 맵 파일명
-        /// </summary>
         public MapData? CurrentMapData { get; set; }
 
         [JsonConverter(typeof(JsonStringEnumConverter))]

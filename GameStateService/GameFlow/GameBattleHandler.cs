@@ -1,7 +1,6 @@
 using GameStateService.Models;
 using GameStateService.Utils;
 using GameStateService.Services;
-using System.Security.Cryptography.X509Certificates;
 
 using GameStateService.Dtos;
 
@@ -163,7 +162,7 @@ public class GameBattleHandler
             ".Trim();
             await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
             await _gameFlowManager.ChangeGameStateAsync(userId, GameStateType.MainMenuState);
-            return message; // Player defeated
+            return message;
         }
 
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
@@ -189,7 +188,7 @@ public class GameBattleHandler
             return battleEscapeResult;
         }
 
-        bool escaped = RandomProvider.FiftyFiftyChance(); // 50% chance to escape
+        bool escaped = RandomProvider.FiftyFiftyChance();
         if (currentRoom.RoomType == RoomType.Boss)
         {
             battleEscapeResult.IsEscaped = false;

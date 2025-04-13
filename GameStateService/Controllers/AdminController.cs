@@ -18,14 +18,6 @@ namespace GameService.Controllers
         [HttpGet("apikey/generate")]
         public async Task<IActionResult> GetPlayers()
         {
-            // bool isOnline = await _memoryCacheService.GetPlayerDataAsync(userId) != null;
-
-            // var result = new PlayerStatusDto
-            // {
-            //     PlayerId = userId,
-            //     Online = isOnline
-            // };
-            // return Ok(result);
             return Ok();
         }
     }

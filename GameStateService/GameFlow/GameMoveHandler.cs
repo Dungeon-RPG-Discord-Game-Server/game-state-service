@@ -40,7 +40,6 @@ public class GameMoveHandler
 
     public async Task<int?> GetNeighborRoomIdByDirection(Room currentRoom, List<Room> allRooms, string direction)
     {
-        // 방향별 상대 좌표 정의
         var directionOffsets = new Dictionary<string, (int dx, int dy)>
         {
             { "up", (0, 1) },
@@ -56,7 +55,6 @@ public class GameMoveHandler
         int targetX = currentRoom.X + dx;
         int targetY = currentRoom.Y + dy;
 
-        // Neighbors 중 위치 일치하는 방 찾기
         foreach (var neighborId in currentRoom.Neighbors)
         {
             var neighbor = allRooms.FirstOrDefault(r => r.Id == neighborId);
@@ -66,7 +64,7 @@ public class GameMoveHandler
             }
         }
 
-        return null; // 해당 방향에 방이 없을 경우
+        return null;
     }
 
     public async Task<int?> MovePlayerAsync(string userId, string direction)
@@ -81,21 +79,17 @@ public class GameMoveHandler
         var currentRoom = playerData.CurrentMapData.Rooms[currentRoomId];   
         var allRooms = playerData.CurrentMapData.Rooms;
 
-        // 방향에 따른 방 ID 가져오기
         int? targetRoomId = await GetNeighborRoomIdByDirection(currentRoom, allRooms, direction);
         if (targetRoomId == null)
         {
             throw new Exception("Invalid move direction.");
         }
         
-        // 방 방문 처리
         playerData.CurrentMapData.Rooms[currentRoomId].Visited = true;
         playerData.CurrentMapData.CurrentRoom = targetRoomId.Value;
         playerData.CurrentMapData.Rooms[targetRoomId.Value].Visited = true;
-        // 방 이동
         playerData.CurrentMapData.CurrentRoom = targetRoomId.Value;
 
-        // 플레이어 데이터 업데이트
         await _memoryCacheService.UpdatePlayerDataAsync(userId, playerData, TimeSpan.FromMinutes(30));
         return targetRoomId.Value;
     }

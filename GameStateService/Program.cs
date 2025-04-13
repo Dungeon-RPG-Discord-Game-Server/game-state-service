@@ -20,7 +20,6 @@ IConfiguration configuration = builder.Configuration;
 string serviceName = configuration["Logging:ServiceName"];
 string serviceVersion = configuration["Logging:ServiceVersion"];
 
-// 1. 서비스 구성 (DI 컨테이너에 서비스 등록)
 builder.Services.AddMemoryCache();
 builder.Services.AddOpenTelemetry().WithTracing(tcb =>
 {
@@ -29,29 +28,25 @@ builder.Services.AddOpenTelemetry().WithTracing(tcb =>
     .SetResourceBuilder(
         ResourceBuilder.CreateDefault()
             .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
-    .AddAspNetCoreInstrumentation() // Automatically generate log lines for HTTP requests
-    .AddJsonConsoleExporter(); // Output log lines to the console
+    .AddAspNetCoreInstrumentation()
+    .AddJsonConsoleExporter();
 });
 
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<MemoryCacheService>();
 builder.Services.AddSingleton<GameFlowManager>();
-builder.Services.AddSingleton<GameMoveHandler>(); // GameStateService 등록
-builder.Services.AddSingleton<GameBattleHandler>(); // GameStateService 등록
+builder.Services.AddSingleton<GameMoveHandler>();
+builder.Services.AddSingleton<GameBattleHandler>();
 
-builder.Services.AddControllers();  // MVC 컨트롤러 등록
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();   // Swagger 설정 (선택)
-
-// 예: 추가적인 서비스 등록
-// builder.Services.AddSingleton<IMyService, MyService>();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.UseMiddleware<ManagerApiKeyMiddleware>();
-app.UseMiddleware<ApiKeyMiddleware>(); // API Key 미들웨어 사용
+app.UseMiddleware<ApiKeyMiddleware>();
 
-// 2. HTTP 요청 파이프라인 구성
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -63,7 +58,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
 
-// 컨트롤러 엔드포인트 매핑
 app.MapControllers();
 
 app.Run();

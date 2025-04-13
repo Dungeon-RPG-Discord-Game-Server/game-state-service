@@ -13,10 +13,10 @@ namespace GameStateService.Utils
 
         private static readonly List<(int dx, int dy)> directions = new()
         {
-            (0, 1),  // 북
-            (1, 0),  // 동
-            (0, -1), // 남
-            (-1, 0)  // 서
+            (0, 1),
+            (1, 0),
+            (0, -1),
+            (-1, 0)
         };
 
         public static MapData GenerateMap(string mapName, int roomCount)
@@ -64,7 +64,6 @@ namespace GameStateService.Utils
                         Neighbors = new List<int>()
                     };
 
-                    // 양방향 연결
                     current.Neighbors.Add(newRoom.Id);
                     newRoom.Neighbors.Add(current.Id);
 
@@ -77,7 +76,6 @@ namespace GameStateService.Utils
                 }
             }
 
-            // 모든 방에 대해 좌우 탐색하여 연결된 경우 Neighbors 보강
             foreach (var room in roomList)
             {
                 foreach (var (dx, dy) in directions)
@@ -96,7 +94,6 @@ namespace GameStateService.Utils
                 }
             }
 
-            // 몬스터, 보상 배치
             foreach (var room in roomList)
             {
                 if (_random.NextDouble() < 0.3 && room.Id != 0)
@@ -176,7 +173,7 @@ namespace GameStateService.Utils
                     {
                         if (currentRoomId.HasValue && room.Id == currentRoomId.Value)
                         {
-                            sb.Append("📍"); // 현재 위치 강조
+                            sb.Append("📍");
                         }
                         else
                         {

@@ -42,10 +42,8 @@ namespace GameStateService.Controllers
                 Expiration = expiration
             };
 
-            // JSON 문자열로 시크릿 저장
             var json = JsonSerializer.Serialize(metadata);
 
-            // 🔐 Key Vault에 저장
             var response = await _secretClient.SetSecretAsync($"apikey-{owner}", json);
             _cache.Set($"apikey-{owner}", key, TimeSpan.FromHours(12));
             return Ok();
