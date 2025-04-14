@@ -1,9 +1,9 @@
-# 🧠 GameStateService
+# GameStateService
 
 GameStateService is a stateless, scalable **HTTP-based game server** that manages player state, battle flow, and map progression for a Discord-based turn-based RPG.  
 Built with **ASP.NET Core Web API**, this service is deployed via **Azure Container Apps** and optimized with in-memory caching and persistent storage using **Azure Cosmos DB**.
 
-## ⚙️ Technologies Used
+## Technologies Used
 
 - **.NET 8** – Web API backend
 - **HTTP Communication** – Stateless RESTful APIs for game commands
@@ -14,7 +14,7 @@ Built with **ASP.NET Core Web API**, this service is deployed via **Azure Contai
 - **OpenTelemetry** – Distributed tracing with context propagation
 - **GitHub Actions** – CI/CD for Docker image build and Azure push
 
-## 📌 Features
+## Features
 
 - Game logic for player registration, movement, battles, and quit flow
 - Stateless REST APIs accessed by the Discord bot via HTTP
@@ -22,7 +22,7 @@ Built with **ASP.NET Core Web API**, this service is deployed via **Azure Contai
 - Fast in-memory caching for low-latency state reads/writes
 - Auto-scaling and Always-On support via Azure
 
-## 🔐 API Key Security Architecture
+## API Key Security Architecture
 
 - Permanent Admin API Key fetched from Azure Key Vault
 - Temporary API Keys issued to Discord service and cached
@@ -32,13 +32,13 @@ Built with **ASP.NET Core Web API**, this service is deployed via **Azure Contai
 
 > All communication is done over HTTP, allowing clean decoupling and scalability between Discord interaction layer and backend game state service.
 
-## 🚀 Deployment
+## Deployment
 
 1. Containerized with Docker
 2. CI via GitHub Actions pushes image to Azure Container Registry
 3. Hosted as an Azure Container App with `minReplicas: 1`
 
-## 📈 Performance Highlights
+## Performance Highlights
 
 - API Key validation reduced from **300ms → 1-2ms** using cache
 - Designed to be stateless and horizontally scalable
