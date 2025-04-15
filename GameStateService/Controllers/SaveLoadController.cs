@@ -32,7 +32,7 @@ namespace GameService.Controllers
             _cosmosDbWrapper = new CosmosDbWrapper(configuration);
         }
 
-        [HttpPost("{userId}/save")]
+        [HttpPut("{userId}/save")]
         public async Task<IActionResult> SaveGame(string userId)
         {
             using (var log = _logger.StartMethod(nameof(SaveGame), HttpContext))

@@ -136,10 +136,10 @@ namespace GameService.Controllers
             }
         }
 
-        [HttpGet("{userId}/map/enter")]
-        public async Task<IActionResult> GetEnterMap(string userId)
+        [HttpPost("{userId}/map/enter")]
+        public async Task<IActionResult> PostEnterMap(string userId)
         {
-            using(var log = _logger.StartMethod(nameof(GetEnterMap), HttpContext)){
+            using(var log = _logger.StartMethod(nameof(PostEnterMap), HttpContext)){
                 try
                 {
                     log.SetAttribute("request.userId", userId);
@@ -317,10 +317,10 @@ namespace GameService.Controllers
             }
         }
 
-        [HttpGet("{userId}/start")]
-        public async Task<IActionResult> GetStartGame(string userId)
+        [HttpPost("{userId}/start")]
+        public async Task<IActionResult> PostStartGame(string userId)
         {
-            using(var log = _logger.StartMethod(nameof(GetStartGame), HttpContext)){
+            using(var log = _logger.StartMethod(nameof(PostStartGame), HttpContext)){
                 try
                 {
                     log.SetAttribute("request.userId", userId);
