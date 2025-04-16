@@ -39,20 +39,11 @@ builder.Services.AddSingleton<GameMoveHandler>();
 builder.Services.AddSingleton<GameBattleHandler>();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.UseMiddleware<ManagerApiKeyMiddleware>();
 app.UseMiddleware<ApiKeyMiddleware>();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.UseRouting();
